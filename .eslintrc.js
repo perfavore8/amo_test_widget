@@ -2,6 +2,9 @@ module.exports = {
   root: true,
   env: {
     node: true,
+    browser: true,
+    es6: true,
+    amd: true,
   },
   extends: [
     "plugin:vue/vue3-essential",
