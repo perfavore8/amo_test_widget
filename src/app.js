@@ -2,6 +2,7 @@ import App from "./App.vue";
 import store from "./stores/index";
 import { createApp, h } from "vue";
 
+console.log("123");
 const Widget = {
   render(self, el) {
     self.showProductsSearch((accountID, el) => {
