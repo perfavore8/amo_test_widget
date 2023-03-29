@@ -4,6 +4,7 @@ import { createApp, h } from "vue";
 
 console.log("123");
 const Widget = {
+  // eslint-disable-next-line no-unused-vars
   render(self, el) {
     self.showProductsSearch((accountID, el) => {
       console.log(accountID, el);
@@ -28,7 +29,7 @@ const Widget = {
     return true;
   },
 
-  settings(el) {
+  settings() {
     console.debug("oneDocs settings");
   },
 
