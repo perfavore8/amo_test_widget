@@ -3,6 +3,8 @@ const path = require("path");
 
 module.exports = defineConfig({
   transpileDependencies: true,
+  assetsDir: "static",
+  filenameHashing: false,
   configureWebpack: {
     entry: ["./src/main.js"],
     mode: "production",
