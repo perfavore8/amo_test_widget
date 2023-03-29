@@ -3,7 +3,7 @@ import App from "./App.vue";
 import store from "./store";
 
 // createApp(App).use(store).mount("#app");
-
+console.log("123");
 const Widget = {
   // eslint-disable-next-line no-unused-vars
   render(self, el) {
