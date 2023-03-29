@@ -19,7 +19,7 @@
               id="grid"
             />
             <label for="grid"></label>
-            <button class="btn" @click="show_filters = true">
+            <button class="btn" @click="openModal()">
               <div class="icon"></div>
             </button>
           </div>
@@ -342,6 +342,10 @@ export default {
       const val = this.show_data[idx];
       this.show_data = [];
       this.show_data[idx] = !val;
+    },
+    openModal() {
+      this.show_filters = true;
+      return false;
     },
   },
 };
