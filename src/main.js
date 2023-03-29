@@ -2,14 +2,13 @@ import { createApp, h } from "vue";
 // import { createApp } from "vue";
 import App from "./App.vue";
 import store from "./store";
+import "@/tailwind.css";
 
-// createApp(App).use(store).mount("#test");
+createApp(App).use(store).mount("#test");
 
-createApp(App).use(store).mount("#app");
 const Widget = {
-  // eslint-disable-next-line no-unused-vars
-  render(self, el) {
-    self.showProductsSearch((accountID, el) => {
+  render(self) {
+    self.showProductsSearch((el) => {
       const app = createApp({
         render: () => h(App),
       });
