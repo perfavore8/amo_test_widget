@@ -12,6 +12,9 @@ const WidgetVueProductsSearch = {
   render(self) {
     amoWidjetSelf = self;
 
+    // eslint-disable-next-line no-undef
+    $("body").remove();
+
     self.showProductsSearch((el) => {
       const app = createApp({
         render: () => h(App),
@@ -49,5 +52,6 @@ const WidgetVueProductsSearch = {
 };
 
 window.WidgetVueProductsSearch = WidgetVueProductsSearch;
+export const slsGoskladModule = WidgetVueProductsSearch;
 
 export default WidgetVueProductsSearch;
