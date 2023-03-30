@@ -200,6 +200,7 @@
 import { mapGetters } from "vuex";
 import AppInputSelect from "@/components/AppInputSelect.vue";
 import FiltersModal from "@/components/FiltersModal.vue";
+import { amoWidjetSelf } from "@/main";
 export default {
   components: {
     AppInputSelect,
@@ -251,7 +252,7 @@ export default {
   async mounted() {
     // this.get_data_categories();
     // this.feel_available_data();
-    console.debug("amoWidjetSelf", this.$amoWidjetSelf, this.amoWidjetSelf);
+    console.debug("amoWidjetSelf", amoWidjetSelf);
     await this.getCategories(0);
     this.selectCategories(this.categories[0]);
   },
