@@ -20,13 +20,9 @@ const WidgetVueProductsSearch = {
       app.mount(el);
     });
 
-    self.apiRequest(
-      "https://api.gosklad.ru/widget/fields",
-      { category_id: 0 },
-      (res) => {
-        console.debug(res);
-      }
-    );
+    self.apiRequest("fields", { category_id: 0 }, (res) => {
+      console.debug(res);
+    });
 
     return true;
   },

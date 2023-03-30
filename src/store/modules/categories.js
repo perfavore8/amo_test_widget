@@ -22,7 +22,7 @@ export default {
         context.commit("updateCategories", json);
         return json;
       } else {
-        amoWidjetSelf?.apiRequest(url, params, (res) => {
+        amoWidjetSelf?.apiRequest("categories", params, (res) => {
           console.debug(res);
           context.commit("updateCategories", res);
           return res;

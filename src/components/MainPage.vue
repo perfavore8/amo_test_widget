@@ -749,14 +749,19 @@ export default {
           grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
           .card {
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
           }
         }
         .card_footer {
+          width: 100%;
           display: flex;
           flex-direction: row;
           justify-content: flex-end;
           align-items: flex-end;
-          margin-top: 10px;
           .btn_del {
             color: #fff;
             background-color: #a2a9ae;

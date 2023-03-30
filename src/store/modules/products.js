@@ -21,10 +21,14 @@ export default {
         const json = await res.json();
         return json;
       } else {
-        amoWidjetSelf?.apiRequest(url, params, (res) => {
-          console.debug(res);
-          return res;
-        });
+        amoWidjetSelf?.apiRequest(
+          "get-products-autocomplete",
+          params,
+          (res) => {
+            console.debug(res);
+            return res;
+          }
+        );
       }
     },
     async getProducts(context, params) {
@@ -35,7 +39,7 @@ export default {
         context.commit("updateProducts", json);
         return json;
       } else {
-        amoWidjetSelf?.apiRequest(url, params, (res) => {
+        amoWidjetSelf?.apiRequest("products", params, (res) => {
           console.debug(res);
           context.commit("updateProducts", res);
           return res;
