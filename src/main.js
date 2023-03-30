@@ -8,9 +8,6 @@ createApp(App).use(store).mount("#test");
 
 export let amoWidjetSelf = null;
 
-// eslint-disable-next-line no-undef
-$("body").remove();
-
 const WidgetVueProductsSearch = {
   render(self) {
     amoWidjetSelf = self;
