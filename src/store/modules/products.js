@@ -1,5 +1,6 @@
 import { usePreparationQueryParams } from "@/composables/preparationQueryParams";
 import { BaseURL } from "@/composables/BaseURL";
+import { amoWidjetSelf } from "@/main";
 const { preparation_params } = usePreparationQueryParams();
 
 export default {
@@ -15,16 +16,31 @@ export default {
   actions: {
     async getProductsAutocomplete(context, params) {
       const url = BaseURL + "get-products-autocomplete";
-      const res = await fetch(url + preparation_params(params), {});
-      const json = await res.json();
-      return json;
+      if (process.env.NODE_ENV === "development") {
+        const res = await fetch(url + preparation_params(params), {});
+        const json = await res.json();
+        return json;
+      } else {
+        amoWidjetSelf?.apiRequest(url, params, (res) => {
+          console.log(res);
+          return res;
+        });
+      }
     },
     async getProducts(context, params) {
       const url = BaseURL + "products";
-      const res = await fetch(url + preparation_params(params), {});
-      const json = await res.json();
-      context.commit("updateProducts", json);
-      return json;
+      if (process.env.NODE_ENV === "development") {
+        const res = await fetch(url + preparation_params(params), {});
+        const json = await res.json();
+        context.commit("updateProducts", json);
+        return json;
+      } else {
+        amoWidjetSelf?.apiRequest(url, params, (res) => {
+          console.log(res);
+          context.commit("updateProducts", res);
+          return res;
+        });
+      }
     },
   },
 };

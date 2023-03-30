@@ -6,8 +6,12 @@ import "material-icons/iconfont/material-icons.css";
 
 createApp(App).use(store).mount("#test");
 
+export let amoWidjetSelf = null;
+
 const WidgetVueProductsSearch = {
   render(self) {
+    amoWidjetSelf = self;
+
     self.showProductsSearch((el) => {
       const app = createApp({
         render: () => h(App),
