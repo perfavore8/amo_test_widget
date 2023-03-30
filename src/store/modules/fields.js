@@ -9,7 +9,7 @@ export default {
   getters: {},
   mutations: {
     updateFields(state, value) {
-      state.products = [...value];
+      state.fields = [...value];
     },
   },
   actions: {

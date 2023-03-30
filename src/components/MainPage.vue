@@ -44,7 +44,7 @@
                 {{ cat.name }}
               </button>
             </div>
-            <div class="path" v-show="show_categories">
+            <div class="path">
               <div class="categories grid">
                 <div
                   class="card"
@@ -52,7 +52,7 @@
                   :key="cat"
                   @click="selectCategories(cat)"
                 >
-                  <div class="row">
+                  <div class="row title">
                     <div class="name"></div>
                     <div class="value">{{ cat.name }}</div>
                   </div>
@@ -60,20 +60,71 @@
                 </div>
               </div>
             </div>
-            <div class="grid products" v-if="!show_categories">
-              <label v-if="paginatedData.length == 0" class="text">
+            <div class="products grid">
+              <label v-if="products.length == 0" class="text">
                 Ничего не найдено
               </label>
               <div class="card" v-for="product in products" :key="product">
-                <div class="row">
+                <div class="row title">
                   <div class="name"></div>
-                  <div class="value">{{ product?.name }}</div>
+                  <div class="value">{{ product?.fields?.name }}</div>
                 </div>
                 <div class="rows">
-                  <div class="row" v-for="field in fields" :key="field">
-                    <div class="name">{{ field.name }} :</div>
-                    <div class="value">{{ product[field.code] }}</div>
-                  </div>
+                  <template v-for="field in sortedFields" :key="field">
+                    <template v-if="field.type === 11">
+                      <div class="row">
+                        <div class="name font-medium">{{ field.name }} :</div>
+                        <div class="value">
+                          {{
+                            product?.fields[field.code]?.cost +
+                            " " +
+                            product?.fields[field.code]?.currency
+                          }}
+                        </div>
+                      </div>
+                      <template v-if="product?.fields[field.code]?.is_nds">
+                        <div class="row ml-1">
+                          <div class="name">НДС :</div>
+                          <div class="value">
+                            {{ product?.fields[field.code]?.nds }}
+                          </div>
+                        </div>
+                        <div class="row ml-1">
+                          <div class="name">НДС включен в цену :</div>
+                          <div class="value">
+                            {{
+                              product?.fields[field.code]?.is_price_include_nds
+                                ? "Да"
+                                : "Нет"
+                            }}
+                          </div>
+                        </div>
+                      </template>
+                    </template>
+                    <template v-else-if="field.type === 13">
+                      <div class="row">
+                        <div class="name font-medium">{{ field.name }} :</div>
+                        <div class="value"></div>
+                      </div>
+                      <div class="row ml-1">
+                        <div class="name">На складе :</div>
+                        <div class="value">
+                          {{ product?.fields[field.code]?.count }}
+                        </div>
+                      </div>
+                      <div class="row ml-1">
+                        <div class="name">В резерве :</div>
+                        <div class="value">
+                          {{ product?.fields[field.code]?.reserve }}
+                        </div>
+                      </div>
+                    </template>
+                    <template v-else-if="field.code === 'name'" />
+                    <div class="row" v-else>
+                      <div class="name">{{ field.name }} :</div>
+                      <div class="value">{{ product?.fields[field.code] }}</div>
+                    </div>
+                  </template>
                 </div>
                 <div class="card_footer">
                   <button
@@ -156,7 +207,6 @@ export default {
   },
   data() {
     return {
-      show_categories: true,
       show_cards: true,
       show_filters: false,
       selectedCategories: [],
@@ -193,6 +243,9 @@ export default {
     },
     fields() {
       return this.$store.state.fields.fields;
+    },
+    sortedFields() {
+      return this.fields?.filter((field) => field.lead_config?.visible > 0);
     },
   },
   async mounted() {
@@ -246,7 +299,10 @@ export default {
       await this.$store.dispatch("getFields", {
         account_id: 30214471,
         category_id: id,
+        with_parents: 1,
       });
+      // console.log(this.fields);
+      // console.log(this.sortedFields);
     },
     handleDeleteItem(row, idx) {
       const obj = {
@@ -651,7 +707,7 @@ export default {
                 display: none;
               }
             }
-            .row:first-child {
+            .title {
               justify-content: center;
               @include font(500, 18px);
               padding: 20px 0;
@@ -685,6 +741,14 @@ export default {
                 justify-content: center;
               }
             }
+          }
+        }
+        .products {
+          margin-top: 30px;
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+          .card {
+            width: 100%;
           }
         }
         .card_footer {
