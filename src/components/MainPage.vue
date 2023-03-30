@@ -251,6 +251,7 @@ export default {
   async mounted() {
     // this.get_data_categories();
     // this.feel_available_data();
+    console.debug("amoWidjetSelf", this.$amoWidjetSelf, this.amoWidjetSelf);
     await this.getCategories(0);
     this.selectCategories(this.categories[0]);
   },

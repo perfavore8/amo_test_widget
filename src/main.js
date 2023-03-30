@@ -16,6 +16,7 @@ const WidgetVueProductsSearch = {
       const app = createApp({
         render: () => h(App),
       });
+      app.use(amoWidjetSelf);
       app.use(store);
       app.mount(el);
     });
