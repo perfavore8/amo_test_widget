@@ -1,15 +1,14 @@
 <template>
-  <div class="app" :class="{ disable: show_filters }">
+  <div class="app">
     <div class="container">
       <div class="header"></div>
       <div class="content">
         <div class="top">
-          <selector-vue
-            :options_props="available_data"
-            @select="select"
-            :selected_option="{
-              name: 'Добавление (поиск на складе по названию или артикулу)...',
-            }"
+          <AppInputSelect
+            :list="search.list"
+            :value="search.value"
+            :placeholder="'Добавление (поиск на складе по названию или артикулу)...'"
+            @changeInputValue="getProductsAutocomplete"
           />
           <div class="btns">
             <input
@@ -20,75 +19,60 @@
             />
             <label for="grid"></label>
             <button class="btn" @click="openModal()">
-              <div class="icon"></div>
+              <span class="material-icons-outlined" style="font-size: 30px">
+                add
+              </span>
             </button>
           </div>
         </div>
         <transition name="rows">
           <div class="bottom" v-if="show_cards">
             <div class="links">
-              <div
+              <button
                 class="triangle"
                 :class="{
-                  triangle_last: path.length - 1 == idx,
+                  triangle_last:
+                    !categories.length && selectedCategories.length - 1 == idx,
                 }"
-                v-for="(cat, idx) in selected_categoryes"
-                :key="cat"
-                @click="
-                  sel_idx = idx;
-                  selected_categoryes.splice(idx);
+                :disabled="
+                  !categories.length && selectedCategories.length - 1 == idx
                 "
+                v-for="(cat, idx) in selectedCategories"
+                :key="cat"
+                @click="selectCategories(cat)"
               >
-                {{ path[idx] }}
-              </div>
+                {{ cat.name }}
+              </button>
             </div>
-            <div
-              class="path"
-              v-for="(item, i) in path"
-              :key="item"
-              v-show="sel_idx == i && show_categoryes"
-            >
-              <!-- <h2>{{ item }}:</h2> -->
-              <div class="grid">
+            <div class="path" v-show="show_categories">
+              <div class="categories grid">
                 <div
                   class="card"
-                  v-for="select in categoryes[item]"
-                  :key="select"
-                  @click="
-                    selected_categoryes.push(select);
-                    sel_idx += 1;
-                  "
+                  v-for="cat in categories"
+                  :key="cat"
+                  @click="selectCategories(cat)"
                 >
                   <div class="row">
                     <div class="name"></div>
-                    <div class="value">{{ select }}</div>
+                    <div class="value">{{ cat.name }}</div>
                   </div>
+                  <div class="row" />
                 </div>
               </div>
             </div>
-            <div
-              class="grid"
-              v-if="
-                !show_categoryes || path.length == selected_categoryes.length
-              "
-            >
+            <div class="grid products" v-if="!show_categories">
               <label v-if="paginatedData.length == 0" class="text">
                 Ничего не найдено
               </label>
-              <div class="card" v-for="row in paginatedData" :key="row">
+              <div class="card" v-for="product in products" :key="product">
                 <div class="row">
-                  <div class="name">{{ params[1] }} :</div>
-                  <div class="value">{{ row[0] }}</div>
+                  <div class="name"></div>
+                  <div class="value">{{ product?.name }}</div>
                 </div>
                 <div class="rows">
-                  <div
-                    class="row"
-                    v-for="(item, idx) in row"
-                    :key="item"
-                    v-show="idx != 0"
-                  >
-                    <div class="name">{{ params[idx + 1] }} :</div>
-                    <div class="value">{{ item }}</div>
+                  <div class="row" v-for="field in fields" :key="field">
+                    <div class="name">{{ field.name }} :</div>
+                    <div class="value">{{ product[field.code] }}</div>
                   </div>
                 </div>
                 <div class="card_footer">
@@ -105,11 +89,11 @@
         </transition>
         <div class="bottom">
           <div class="row" v-for="(row, idx) in rows" :key="row">
-            <div class="row_title" @click="toShowData(idx)">
+            <div class="row_title" @click="toggleShowData(idx)">
               <label>
-                {{ short_value(row) }}
+                {{ row }}
               </label>
-              <button class="btn" @click="handle_delete(row, idx)">
+              <button class="btn" @click="handleDeleteItem(row, idx)">
                 <div class="icon"></div>
               </button>
             </div>
@@ -163,82 +147,108 @@
 
 <script>
 import { mapGetters } from "vuex";
-import SelectorVue from "@/components/SelectorVue";
+import AppInputSelect from "@/components/AppInputSelect.vue";
 import FiltersModal from "@/components/FiltersModal.vue";
 export default {
   components: {
-    SelectorVue,
+    AppInputSelect,
     FiltersModal,
   },
   data() {
     return {
-      path: ["Поступление", "№ партии", "НДС включен в цену"],
-      selected_categoryes: [],
-      sel_idx: 0,
-      show_categoryes: true,
-      categoryes: {},
-      short_data: [],
-      cat_for_short_dat: ["Название", "Артикул", "№ партии"],
-      rows: [],
-      available_data: [],
-      show_cards: false,
+      show_categories: true,
+      show_cards: true,
       show_filters: false,
-      countes: [],
-      show_data: [],
-      fields: [
-        { name: "Количество", change: true },
-        { name: "Поставщик", change: true },
-        { name: "Группа", change: false },
-        { name: "Артикул", change: false },
-        { name: "На складе", change: false },
-        { name: "В резерве", change: false },
-        { name: "Цена", change: true },
-        { name: "Себестоимость", change: false },
-        { name: "№ партии", change: false },
-        { name: "Описание", change: true },
-        { name: "Единицы измерений", change: false },
-        { name: "Поступление", change: false },
-        { name: "Сумма ₽", change: false },
-        { name: "Итого к оплате ₽", change: false },
-        { name: "Прибыль ₽", change: false },
-      ],
+      selectedCategories: [],
+      search: {
+        value: "",
+        list: [],
+      },
+      // fields: [
+      //   { name: "Количество", change: true },
+      //   { name: "Поставщик", change: true },
+      //   { name: "Группа", change: false },
+      //   { name: "Артикул", change: false },
+      //   { name: "На складе", change: false },
+      //   { name: "В резерве", change: false },
+      //   { name: "Цена", change: true },
+      //   { name: "Себестоимость", change: false },
+      //   { name: "№ партии", change: false },
+      //   { name: "Описание", change: true },
+      //   { name: "Единицы измерений", change: false },
+      //   { name: "Поступление", change: false },
+      //   { name: "Сумма ₽", change: false },
+      //   { name: "Итого к оплате ₽", change: false },
+      //   { name: "Прибыль ₽", change: false },
+      // ],
     };
   },
   computed: {
     ...mapGetters(["data", "params"]),
-    paginatedData() {
-      if (this.show_categoryes) {
-        let dat = [];
-        dat = dat.concat(this.data);
-        let result = [];
-        dat.forEach((val) => {
-          let a = true;
-          this.path.forEach((title, i) => {
-            const title_idx = this.params.indexOf(title) - 1;
-            a = val[title_idx] == this.selected_categoryes[i] && a;
-          });
-          if (a) result.push(val);
-        });
-        return result;
-      } else {
-        return this.data;
-      }
+    categories() {
+      return this.$store.state.categories.categories;
+    },
+    products() {
+      return this.$store.state.products.products;
+    },
+    fields() {
+      return this.$store.state.fields.fields;
     },
   },
-  mounted() {
-    this.get_data_categoryes();
-    this.feel_available_data();
+  async mounted() {
+    // this.get_data_categories();
+    // this.feel_available_data();
+    await this.getCategories(0);
+    this.selectCategories(this.categories[0]);
   },
   watch: {
     show_cards() {
       if (!this.show_cards) {
-        this.selected_categoryes = [];
+        this.selected_categories = [];
         this.sel_idx = 0;
       }
     },
   },
   methods: {
-    handle_delete(row, idx) {
+    async getProductsAutocomplete(q) {
+      this.search.value = q;
+      const res = await this.$store.dispatch("getProductsAutocomplete", {
+        account_id: 30214471,
+        q: q,
+      });
+      res.map((val) => (val.name = val.label));
+      this.search.list = res;
+    },
+    selectCategories(cat) {
+      const idx = this.selectedCategories?.indexOf(cat);
+      if (idx !== -1) {
+        this.selectedCategories.splice(idx, 9999);
+      }
+      this.selectedCategories.push(cat);
+
+      this.getCategories(cat.id);
+      this.getProducts(cat.id);
+      this.getFields(cat.id);
+    },
+    async getCategories(id) {
+      await this.$store.dispatch("getCategories", {
+        account_id: 30214471,
+        parent_id: id,
+      });
+    },
+    async getProducts(id) {
+      await this.$store.dispatch("getProducts", {
+        account_id: 30214471,
+        category_id: id,
+      });
+    },
+    async getFields(id) {
+      await this.$store.dispatch("getFields", {
+        account_id: 30214471,
+        category_id: id,
+      });
+    },
+    handleDeleteItem(row, idx) {
       const obj = {
         name: this.short_value(row),
         data: row,
@@ -278,33 +288,6 @@ export default {
       };
       this.countes.push(obj);
     },
-    get_data_categoryes() {
-      this.categoryes = {};
-      function unique(arr) {
-        let res = [];
-
-        for (let str of arr) {
-          if (!res.includes(str)) {
-            res.push(str);
-          }
-        }
-        return res;
-      }
-      const result = {};
-      let titles = [];
-      titles = titles.concat(this.params);
-      titles.pop();
-      titles.shift();
-      titles.forEach((title, idx) => {
-        result[title] = [];
-        let arr = [];
-        this.data.forEach((val) => {
-          arr.push(val[idx]);
-        });
-        result[title] = unique(arr);
-      });
-      Object.assign(this.categoryes, result);
-    },
     feel_available_data() {
       this.data.forEach((val, idx) => {
         const obj = {
@@ -314,19 +297,6 @@ export default {
         };
         this.available_data.push(obj);
       });
-    },
-    short_value(data) {
-      const search_idx = (val) => {
-        return this.params.indexOf(val) - 1;
-      };
-      let str = "";
-      this.cat_for_short_dat.forEach((value, idx) => {
-        idx == 0
-          ? (str = str + data[search_idx(value)] + " (")
-          : (str = str + value + ": " + data[search_idx(value)] + " ");
-      });
-      str = str + ")";
-      return str;
     },
     search_value(str, row) {
       const idx = this.search_idx(str);
@@ -338,7 +308,7 @@ export default {
       const idx = this.params.indexOf(str) - 1;
       return idx;
     },
-    toShowData(idx) {
+    toggleShowData(idx) {
       const val = this.show_data[idx];
       this.show_data = [];
       this.show_data[idx] = !val;
@@ -374,19 +344,12 @@ export default {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        .v-select {
-          width: calc(80% - 26px);
+        .input-select {
+          width: 80%;
           margin: 2px;
         }
-        .v-select:deep(.title) {
-          p {
-            overflow-x: hidden;
-            white-space: nowrap;
-            max-height: 34px;
-          }
-          .arrow {
-            margin-left: 10px;
-          }
+        .input-select:deep(.item) {
+          justify-content: start;
         }
         .btns {
           display: flex;
@@ -464,7 +427,7 @@ export default {
           .triangle {
             cursor: pointer;
             padding: 5px 10px 5px 15px;
-            height: 20px;
+            height: 30px;
             margin: 5px 0;
             @include font(400, 15px);
             -webkit-clip-path: polygon(
@@ -498,14 +461,18 @@ export default {
             margin-left: 0;
           }
           .triangle_last {
+            cursor: default;
             color: #fff;
-            background: rgba(27, 53, 70, 0.945) !important;
+            background: rgba(27, 53, 70, 0.9) !important;
           }
           .triangle_last:hover {
-            background: rgba(27, 53, 70, 0.851) !important;
+            background: rgba(27, 53, 70, 0.8) !important;
+          }
+          .triangle_last:active {
+            background: rgba(27, 53, 70, 0.6) !important;
           }
           .triangle:active {
-            background: #d6d6d6 !important;
+            background: #d6d6d6;
           }
 
           .triangle:nth-child(3n + 1) {
@@ -644,6 +611,7 @@ export default {
             }
           }
         }
+
         .grid {
           display: flex;
           flex-direction: row;
@@ -689,6 +657,32 @@ export default {
               padding: 20px 0;
               .name {
                 display: none;
+              }
+            }
+          }
+        }
+        .categories {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+          .card {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            .row {
+              width: 100%;
+              .value {
+                text-align: center;
+              }
+            }
+            .row:first-child {
+              border-bottom: none;
+              height: 100%;
+              .value {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
               }
             }
           }
