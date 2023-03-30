@@ -16,6 +16,7 @@ export default {
   actions: {
     async getProductsAutocomplete(context, params) {
       const url = BaseURL + "get-products-autocomplete";
+      let response = [];
       if (process.env.NODE_ENV === "development") {
         const res = await fetch(url + preparation_params(params), {});
         const json = await res.json();
@@ -26,9 +27,10 @@ export default {
           params,
           (res) => {
             console.debug(res);
-            return res;
+            response = JSON.parse(res);
           }
         );
+        return response;
       }
     },
     async getProducts(context, params) {
