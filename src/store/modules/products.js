@@ -26,8 +26,8 @@ export default {
           "get-products-autocomplete",
           params,
           (res) => {
-            console.debug(res);
-            response = JSON.parse(res);
+            console.debug(res, Array.isArray(res));
+            response = res;
           }
         );
         return response;

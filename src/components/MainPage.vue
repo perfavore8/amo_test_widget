@@ -18,11 +18,11 @@
               id="grid"
             />
             <label for="grid"></label>
-            <button class="btn" @click="openModal()">
+            <div class="btn" id="sls_btn_open_filter" @click="openModal()">
               <span class="material-icons-outlined" style="font-size: 30px">
                 add
               </span>
-            </button>
+            </div>
           </div>
         </div>
         <transition name="rows">
