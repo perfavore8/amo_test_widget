@@ -48,7 +48,9 @@ const WidgetVueProductsSearch = {
   tasks_selected() {},
 };
 
-window.WidgetVueProductsSearch = WidgetVueProductsSearch;
-export const slsGoskladModule = WidgetVueProductsSearch;
+// window.WidgetVueProductsSearch = WidgetVueProductsSearch;
+
+// eslint-disable-next-line no-undef
+$("body").data("WidgetVueProductsSearch", WidgetVueProductsSearch);
 
 export default WidgetVueProductsSearch;
