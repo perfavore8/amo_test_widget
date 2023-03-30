@@ -301,8 +301,8 @@ export default {
         category_id: id,
         with_parents: 1,
       });
-      // console.log(this.fields);
-      // console.log(this.sortedFields);
+      // console.debug(this.fields);
+      // console.debug(this.sortedFields);
     },
     handleDeleteItem(row, idx) {
       const obj = {

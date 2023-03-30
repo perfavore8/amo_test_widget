@@ -22,7 +22,7 @@ export default {
         return json;
       } else {
         amoWidjetSelf?.apiRequest(url, params, (res) => {
-          console.log(res);
+          console.debug(res);
           return res;
         });
       }
@@ -36,7 +36,7 @@ export default {
         return json;
       } else {
         amoWidjetSelf?.apiRequest(url, params, (res) => {
-          console.log(res);
+          console.debug(res);
           context.commit("updateProducts", res);
           return res;
         });

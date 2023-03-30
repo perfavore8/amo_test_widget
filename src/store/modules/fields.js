@@ -23,7 +23,7 @@ export default {
         return json;
       } else {
         amoWidjetSelf?.apiRequest(url, params, (res) => {
-          console.log(res);
+          console.debug(res);
           context.commit("updateFields", res);
           return res;
         });

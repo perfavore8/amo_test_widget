@@ -24,7 +24,7 @@ const WidgetVueProductsSearch = {
       "https://api.gosklad.ru/widget/fields",
       { category_id: 0 },
       (res) => {
-        console.log(res);
+        console.debug(res);
       }
     );
 
