@@ -16,7 +16,7 @@ export default {
   actions: {
     async getFields(context, params) {
       const url = BaseURL + "fields";
-      console.log(process.env.NODE_ENV, amoWidjetSelf);
+      console.debug(process.env.NODE_ENV, amoWidjetSelf);
       if (process.env.NODE_ENV === "development") {
         const res = await fetch(url + preparation_params(params), {});
         const json = await res.json();
