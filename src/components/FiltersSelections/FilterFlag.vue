@@ -9,8 +9,9 @@
 </template>
 
 <script>
-import { nextTick } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import SelectorVue from "@/components/SelectorVue.vue";
+
 export default {
   components: {
     SelectorVue,
@@ -25,49 +26,46 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      options: [
-        { name: "Все", value: 1 },
-        { name: "Да", value: 2 },
-        { name: "Нет", value: 3 },
-      ],
-      filterValue: 1,
-    };
-  },
-  computed: {
-    option_value() {
-      return {
-        value: this.filterValue,
-      };
-    },
-  },
-  watch: {
-    option_value: {
-      handler() {
-        this.emit_value();
+  setup(props, { emit }) {
+    const options = ref([
+      { name: "Все", value: 1 },
+      { name: "Да", value: 2 },
+      { name: "Нет", value: 3 },
+    ]);
+    const filterValue = ref(1);
+
+    const option_value = computed(() => {
+      return { value: filterValue.value };
+    });
+
+    watch(
+      option_value,
+      () => {
+        emit("change_filter_value", option_value.value, props.idx);
       },
-      deep: true,
-    },
-    item() {
-      this.change_value();
-    },
-  },
-  mounted() {
-    this.change_value();
-  },
-  methods: {
-    change_value() {
+      { deep: true }
+    );
+
+    const change_value = () => {
       nextTick(() => {
-        this.filterValue = this.item.value;
+        filterValue.value = props.item.value;
       });
-    },
-    emit_value() {
-      this.$emit("change_filter_value", this.option_value, this.idx);
-    },
-    option_select(option) {
-      this.filterValue = option.value;
-    },
+    };
+
+    const option_select = (option) => {
+      filterValue.value = option.value;
+    };
+
+    watch(() => props.item, change_value);
+
+    change_value();
+
+    return {
+      options,
+      filterValue,
+      option_value,
+      option_select,
+    };
   },
 };
 </script>
@@ -80,8 +78,5 @@ export default {
   display: flex;
   flex-direction: row;
   margin: 0 auto;
-  .v-select {
-    width: calc(100% - 26px) !important;
-  }
 }
 </style>

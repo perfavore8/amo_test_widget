@@ -17,6 +17,10 @@ export default {
 </script>
 
 <style lang="scss">
+body {
+  padding-left: 0 !important;
+  min-width: 0 !important;
+}
 #myVue {
   font-family: "Inter";
 }

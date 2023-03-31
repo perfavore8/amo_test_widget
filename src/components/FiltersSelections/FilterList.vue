@@ -3,16 +3,17 @@
     <button @click="open_selector()">
       <div class="arrow" :class="{ rotate_arrow: show_selector }"></div>
     </button>
-    <multi-selector
-      class="selector"
-      id="selector123"
-      v-if="show_selector"
-      :options_props="selector_options"
-      @select="option_select_multi"
-      :selected_options="filterValue"
-      @focusout="handleFocusOut"
-      tabindex="1"
-    />
+    <template v-if="show_selector">
+      <div class="backdrop" @click="closeSelector()" />
+      <multi-selector
+        class="selector"
+        id="selector123"
+        :options_props="[{ name: 'Все', value: '' }, ...selector_options]"
+        @select="option_select_multi"
+        :selected_options="filterValue"
+        tabindex="1"
+      />
+    </template>
   </div>
 </template>
 
@@ -67,14 +68,25 @@ export default {
   methods: {
     change_value() {
       nextTick(() => {
-        this.filterValue = [];
+        this.filterValue = [false];
         this.item.value.forEach((val, idx) => {
-          this.filterValue[idx] = val;
+          this.filterValue[idx + 1] = val;
         });
       });
     },
     emit_value() {
-      this.$emit("change_filter_value", this.option_value, this.idx);
+      const res = {
+        value: [],
+      };
+      const arr = [{ name: "Все", value: "" }, ...this.selector_options];
+      this.option_value.value.forEach((val, idx) =>
+        val
+          ? this.item.type == 12
+            ? res.value.push(arr[idx]?.value)
+            : res.value.push(arr[idx]?.name)
+          : null
+      );
+      this.$emit("change_filter_value", res, this.idx);
     },
     option_select_multi(options) {
       this.filterValue = options;
@@ -93,6 +105,9 @@ export default {
           this.show_selector = false;
         });
       }, 150);
+    },
+    closeSelector() {
+      this.show_selector = false;
     },
   },
 };
@@ -129,14 +144,27 @@ export default {
   }
   .selector {
     position: absolute;
-    z-index: 999;
+    z-index: 50;
     margin-top: 30px;
-    max-width: 224px;
+    // max-width: 224px;
   }
-  .multi_selector {
-    :deep(.item) {
-      width: 200px;
-    }
-  }
+  // .multi_selector {
+  //   width: fit-content;
+  //   max-width: none;
+  //   :deep(.item) {
+  //     white-space: pre;
+  //     width: max-content;
+  //     min-width: 100%;
+  //   }
+  // }
+}
+.backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: transparent;
+  z-index: 49;
 }
 </style>

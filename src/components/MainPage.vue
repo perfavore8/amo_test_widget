@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <div class="container">
+    <div class="container1">
       <div class="header"></div>
       <div class="content">
         <div class="top">
@@ -9,19 +9,28 @@
             :value="search.value"
             :placeholder="'Добавление (поиск на складе по названию или артикулу)...'"
             @changeInputValue="getProductsAutocomplete"
+            @select="(value) => addToLead(value.id)"
           />
           <div class="btns">
             <input
               type="checkbox"
-              class="checkbox"
+              class="sls_checkbox"
               v-model="show_cards"
               id="grid"
             />
             <label for="grid"></label>
-            <div class="btn" id="sls_btn_open_filter" @click="openModal()">
-              <span class="material-icons-outlined" style="font-size: 30px">
-                add
-              </span>
+            <div class="sls_btn" id="sls_btn_open_filter" @click="openModal()">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="white"
+                  d="M12 19q-.425 0-.713-.288T11 18v-5H6q-.425 0-.713-.288T5 12q0-.425.288-.713T6 11h5V6q0-.425.288-.713T12 5q.425 0 .713.288T13 6v5h5q.425 0 .713.288T19 12q0 .425-.288.713T18 13h-5v5q0 .425-.288.713T12 19Z"
+                />
+              </svg>
             </div>
           </div>
         </div>
@@ -76,9 +85,11 @@
                         <div class="name font-medium">{{ field.name }} :</div>
                         <div class="value">
                           {{
-                            product?.fields[field.code]?.cost +
-                            " " +
-                            product?.fields[field.code]?.currency
+                            product?.fields[field.code]?.cost
+                              ? product?.fields[field.code]?.cost
+                              : "" + " " + product?.fields[field.code]?.currency
+                              ? product?.fields[field.code]?.currency
+                              : ""
                           }}
                         </div>
                       </div>
@@ -128,8 +139,8 @@
                 </div>
                 <div class="card_footer">
                   <button
-                    class="btn btn_del"
-                    @click="update_changeValue([row], [1])"
+                    class="sls_btn btn_del"
+                    @click="addToLead(product.id)"
                   >
                     Добавить к сделке
                   </button>
@@ -144,7 +155,7 @@
               <label>
                 {{ row }}
               </label>
-              <button class="btn" @click="handleDeleteItem(row, idx)">
+              <button class="sls_btn" @click="handleDeleteItem(row, idx)">
                 <div class="icon"></div>
               </button>
             </div>
@@ -153,18 +164,18 @@
                 <div class="row" v-for="(item, index) in fields" :key="item">
                   <div class="name">{{ item.name }}</div>
                   <input
-                    class="input"
+                    class="sls_input"
                     type="number"
                     v-model="countes[idx].count"
                     v-if="index == 0"
                   />
                   <input
-                    class="input"
+                    class="sls_input"
                     v-model="countes[idx].company"
                     v-else-if="index == 1"
                   />
                   <input
-                    class="input"
+                    class="sls_input"
                     v-model="rows[idx][search_idx(item.name)]"
                     v-else-if="item.change"
                   />
@@ -173,7 +184,7 @@
                   </div>
                 </div>
                 <div class="footer">
-                  <button class="btn btn1">возврат</button>
+                  <button class="sls_btn btn1">возврат</button>
                 </div>
               </div>
             </transition>
@@ -254,7 +265,7 @@ export default {
     // this.feel_available_data();
     console.debug("amoWidjetSelf", amoWidjetSelf);
     await this.getCategories(0);
-    this.selectCategories(this.categories[0]);
+    // this.selectCategories(this.categories[0]);
   },
   watch: {
     show_cards() {
@@ -265,6 +276,12 @@ export default {
     },
   },
   methods: {
+    addToLead(id) {
+      this.$store.dispatch("addProduct", {
+        account_id: 30214471,
+        productId: id,
+      });
+    },
     async getProductsAutocomplete(q) {
       this.search.value = q;
       const res = await this.$store.dispatch("getProductsAutocomplete", {
@@ -283,7 +300,7 @@ export default {
 
       this.getCategories(cat.id);
       this.getProducts(cat.id);
-      this.getFields(cat.id);
+      if (this.selectedCategories.length === 1) this.getFields(cat.id);
     },
     async getCategories(id) {
       await this.$store.dispatch("getCategories", {
@@ -383,9 +400,9 @@ export default {
 @import "@/app.scss";
 .app {
   height: 100%;
-  .container {
+  .container1 {
     box-sizing: border-box;
-    overflow-y: auto;
+    // overflow-y: auto;
     width: 100%;
     height: 100%;
     min-height: 500px;
@@ -414,32 +431,39 @@ export default {
           flex-direction: row;
           align-items: center;
           gap: 15px;
-          .checkbox + label::before {
+          .sls_checkbox + label::before {
             width: 32px;
             height: 32px;
             margin-left: 17px;
             border: none;
             transition: all 0.15s ease-ount;
-            @include bg_image("@/assets/arrow.svg", 100%);
+            filter: contrast(0.5);
+            @include bg_image(
+              "https://www.svgrepo.com/show/510838/arrow-up-sm.svg",
+              100%
+            );
           }
-          .checkbox:checked + label::before {
+          .sls_checkbox:checked + label::before {
             border-color: transparent;
             background-color: transparent;
-            @include bg_image("@/assets/arrow.svg", 100%);
+            @include bg_image(
+              "https://www.svgrepo.com/show/510838/arrow-up-sm.svg",
+              100%
+            );
             transform: rotateX(180deg);
-            background-position: center 8px;
+            background-position: center center;
           }
-          .checkbox:not(:checked) + label:hover::before {
+          .sls_checkbox:not(:checked) + label:hover::before {
             background-size: 110%;
           }
-          .checkbox:checked + label:hover::before {
+          .sls_checkbox:checked + label:hover::before {
             background-size: 110%;
-            background-position: center 6px;
+            background-position: center center;
           }
-          .checkbox:not(:disabled):active + label::before {
+          .sls_checkbox:not(:disabled):active + label::before {
             background-color: transparent;
           }
-          .btn {
+          .sls_btn {
             width: 32px;
             height: 32px;
             color: #fff;
@@ -453,23 +477,22 @@ export default {
             .icon {
               height: 20px;
               width: 20px;
-              @include bg_image("@/assets/plus.svg", 100%);
+              @include bg_image(
+                "https://www.svgrepo.com/show/510785/add-plus.svg",
+                100%
+              );
             }
           }
-          .btn:hover,
-          .btn:focus-visible {
+          .sls_btn:hover,
+          .sls_btn:focus-visible {
             background-color: #40bf99;
             box-shadow: 0 0 5px 2px rgb(64 191 153 / 25%);
           }
-          .btn:active {
+          .sls_btn:active {
             background-color: #00cc8f;
             box-shadow: 0 0 5px 2px rgb(0 204 143 / 25%);
             height: 31px;
             width: 31px;
-            .icon {
-              height: 19px;
-              width: 19px;
-            }
           }
         }
       }
@@ -585,7 +608,7 @@ export default {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
-            .btn {
+            .sls_btn {
               background: transparent;
               height: 17px;
               width: 17px;
@@ -602,7 +625,7 @@ export default {
                 @include bg_image("@/assets/cross_black.svg", 90%);
               }
             }
-            .btn:hover {
+            .sls_btn:hover {
               .icon {
                 background-size: 100%;
               }
@@ -713,8 +736,12 @@ export default {
               justify-content: center;
               @include font(500, 18px);
               padding: 20px 0;
+              width: 100%;
               .name {
                 display: none;
+              }
+              .value {
+                text-align: center;
               }
             }
           }
@@ -723,6 +750,7 @@ export default {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
           .card {
+            cursor: pointer;
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -756,6 +784,9 @@ export default {
             justify-content: space-between;
             align-items: center;
             gap: 12px;
+            .title {
+              @include font(600, 20px);
+            }
           }
         }
         .card_footer {

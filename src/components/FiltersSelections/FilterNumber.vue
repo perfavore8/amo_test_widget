@@ -1,16 +1,7 @@
 <template>
   <div class="filter">
-    <button @click="option == 5 ? (option = 1) : (option += 1)">
-      <div
-        class="icon"
-        :class="{
-          equal: option == 1,
-          more: option == 2,
-          more_or_equal: option == 3,
-          less: option == 4,
-          less_or_equal: option == 5,
-        }"
-      ></div>
+    <button @click="option == 4 ? (option = 0) : (option += 1)">
+      <span :class="{ big: option == 0 }">{{ options[option] }}</span>
     </button>
     <input v-model="filterValue" type="number" />
   </div>
@@ -31,14 +22,15 @@ export default {
   },
   data() {
     return {
-      option: 1,
+      option: 0,
       filterValue: null,
+      options: ["=", ">", ">=", "<", "<="],
     };
   },
   computed: {
     option_value() {
       return {
-        option: this.option,
+        option: this.options[this.option],
         value: this.filterValue,
       };
     },
@@ -60,8 +52,8 @@ export default {
   methods: {
     change_value() {
       nextTick(() => {
-        this.option = this.item.option;
         this.filterValue = this.item.value;
+        if (this.item.value == null) this.option = 0;
       });
     },
     emit_value() {
@@ -74,7 +66,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .filter {
-  max-width: 100px;
+  max-width: 80%;
   min-width: 50px;
   display: flex;
   flex-direction: row;
@@ -83,7 +75,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 37px;
+    width: 69px;
     height: 27px;
     background: #757575;
     border-radius: 4px;
@@ -91,14 +83,17 @@ export default {
     z-index: 2;
     cursor: pointer;
 
-    .icon {
-      width: 35px;
-      height: 35px;
+    > span {
+      @include font(400, 14px, 1);
+      color: white;
+    }
+    .big {
+      @include font(400, 20px, 1);
     }
   }
   > input {
     width: 100%;
-    height: 23px;
+    height: 27px;
     background: #ffffff;
     border: 0.5px solid #c4c4c4;
     border-radius: 4px;
@@ -107,22 +102,15 @@ export default {
     @include font(400, 14px, 17px);
     outline: none;
   }
-}
-.equal {
-  @include bg_image("@/assets/equal.svg", 30% 30%);
-}
-.more {
-  @include bg_image("@/assets/more.svg", 30% 30%);
-}
-.more_or_equal {
-  @include bg_image("@/assets/more_or_equal.svg", 60% 60%);
-}
-.less {
-  @include bg_image("@/assets/more.svg", 30% 30%);
-  transform: rotate(180deg);
-}
-.less_or_equal {
-  @include bg_image("@/assets/more_or_equal.svg", 60% 60%);
-  transform: rotate(180deg);
+  input[type="number"] {
+    -moz-appearance: textfield;
+    -webkit-appearance: textfield;
+    appearance: textfield;
+  }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    display: none;
+  }
 }
 </style>

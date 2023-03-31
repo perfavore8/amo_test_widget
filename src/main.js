@@ -4,8 +4,6 @@ import store from "./store";
 import "@/tailwind.css";
 import "material-icons/iconfont/material-icons.css";
 
-createApp(App).use(store).mount("#test");
-
 export let amoWidjetSelf = null;
 
 const WidgetVueProductsSearch = {
@@ -54,3 +52,5 @@ const WidgetVueProductsSearch = {
 $("body").data("WidgetVueProductsSearch", WidgetVueProductsSearch);
 
 export default WidgetVueProductsSearch;
+
+createApp(App).use(store).mount("#test");

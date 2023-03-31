@@ -1,13 +1,7 @@
 <template>
   <div class="filter">
-    <button @click="option == 2 ? (option = 1) : (option += 1)">
-      <div
-        class="icon"
-        :class="{
-          equal: option == 1,
-          tilde: option == 2,
-        }"
-      ></div>
+    <button @click="option == 1 ? (option = 0) : (option += 1)">
+      <span>{{ options[option] }}</span>
     </button>
     <input v-model="filterValue" type="text" />
   </div>
@@ -28,14 +22,15 @@ export default {
   },
   data() {
     return {
-      option: 1,
+      option: 0,
       filterValue: null,
+      options: ["=", "~"],
     };
   },
   computed: {
     option_value() {
       return {
-        option: this.option,
+        option: this.options[this.option],
         value: this.filterValue,
       };
     },
@@ -57,8 +52,8 @@ export default {
   methods: {
     change_value() {
       nextTick(() => {
-        this.option = this.item.option;
         this.filterValue = this.item.value;
+        if (this.item.value == null) this.option = 0;
       });
     },
     emit_value() {
@@ -71,7 +66,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/app.scss";
 .filter {
-  max-width: 100px;
+  max-width: 80%;
   min-width: 50px;
   display: flex;
   flex-direction: row;
@@ -80,7 +75,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 37px;
+    width: 69px;
     height: 27px;
     background: #757575;
     border-radius: 4px;
@@ -88,14 +83,14 @@ export default {
     z-index: 2;
     cursor: pointer;
 
-    .icon {
-      width: 35px;
-      height: 35px;
+    > span {
+      @include font(400, 20px, 1);
+      color: white;
     }
   }
   > input {
     width: 100%;
-    height: 23px;
+    height: 27px;
     background: #ffffff;
     border: 0.5px solid #c4c4c4;
     border-radius: 4px;
@@ -104,11 +99,5 @@ export default {
     @include font(400, 14px, 17px);
     outline: none;
   }
-}
-.equal {
-  @include bg_image("@/assets/equal.svg", 30% 30%);
-}
-.tilde {
-  @include bg_image("@/assets/tilde.svg", 40% 40%);
 }
 </style>

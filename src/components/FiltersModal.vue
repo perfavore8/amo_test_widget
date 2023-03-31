@@ -1,37 +1,33 @@
 <template>
   <div class="app_modal">
+    <div class="sls_backdrop_with_filter" @click="close()" />
     <div class="container">
       <div class="header">
-        <label>Filters Modal</label>
+        <label></label>
         <button class="exit" @click="close()">
-          <div class="icon"></div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="28"
+            height="28"
+            viewBox="0 0 15 15"
+          >
+            <path
+              fill="currentColor"
+              fill-rule="evenodd"
+              d="M11.782 4.032a.575.575 0 1 0-.813-.814L7.5 6.687L4.032 3.218a.575.575 0 0 0-.814.814L6.687 7.5l-3.469 3.468a.575.575 0 0 0 .814.814L7.5 8.313l3.469 3.469a.575.575 0 0 0 .813-.814L8.313 7.5l3.469-3.468Z"
+              clip-rule="evenodd"
+            />
+          </svg>
         </button>
       </div>
       <div class="content">
         <keep-alive>
-          <filters-list
-            :show_filters="show_filters"
-            :dont_show_filters="dont_show_filters"
-            @updateFiltersValue="updateFiltersValue"
-            @add_filter="add_filter"
-          />
+          <main-grid @accept="accept" class="main_grid" />
         </keep-alive>
-        <div class="accept_btn">
-          <button @click="clean_filters()" class="btn1 btn">Очистить</button>
-          <button @click="feelFilters()" class="btn2 btn">Применить</button>
-        </div>
-        <main-grid
-          class="main_grid"
-          :data="data"
-          :collval="collval"
-          @update_changeValue="update_changeValue"
-          @accept="accept"
-          @update_countes="update_countes"
-        />
       </div>
       <div class="footer">
         <div class="btns">
-          <button class="btn btn1" @click="close()">Назад</button>
+          <button class="sls_btn btn1" @click="close()">Назад</button>
         </div>
       </div>
     </div>
@@ -39,118 +35,25 @@
 </template>
 
 <script>
-import FiltersList from "@/components/FiltersList.vue";
 import MainGrid from "@/components/MainGrid.vue";
-import { reactive, ref } from "@vue/reactivity";
-import { computed } from "@vue/runtime-core";
-import { useStore } from "vuex";
-import { useFilters } from "@/composables/filters";
 export default {
   components: {
-    FiltersList,
     MainGrid,
   },
   emits: {
     close: null,
-    update_changeValue: null,
   },
-  setup(props, { emit }) {
-    const { filtersValue, eqval, includes, updateFiltersValue } = useFilters();
-    const store = useStore();
+  setup(props, context) {
     const close = () => {
-      emit("close");
+      context.emit("close");
     };
     const accept = () => {
-      let array = [];
-      let array2 = [];
-      countes.value.forEach((val, idx) => {
-        if (val != undefined && val != "") {
-          array.push(data.value[idx]);
-          array2.push(countes.value[idx]);
-        }
-      });
-      emit("update_changeValue", array, array2);
       close();
     };
 
-    const arg1 = computed(() => {
-      return store.getters.data;
-    });
-    const arg2 = computed(() => {
-      return store.getters.service;
-    });
-    let dat = [];
-    arg2.value.forEach((val) => dat.push(val));
-    arg1.value.forEach((val) => dat.push(val));
-    const data = ref(dat);
-    const update_data = () => {
-      data.value = [];
-      dat.forEach((val) => {
-        data.value.push(reactive(val));
-      });
-    };
-    data.value = data.value.sort((a, b) => a[0].localeCompare(b[0]));
-
-    const collval = [
-      true,
-      true,
-      false,
-      true,
-      false,
-      true,
-      true,
-      true,
-      true,
-      true,
-      false,
-      false,
-      true,
-      true,
-      false,
-      false,
-      false,
-      false,
-      false,
-    ];
-
-    const feelFilters = () => {
-      update_data();
-      const arr = [0, 1];
-      arr.forEach((idx) => {
-        if (
-          filtersValue.value[idx].value != "" &&
-          filtersValue.value[idx].value != null &&
-          filtersValue.value[idx].value != undefined
-        ) {
-          const dat = [];
-          data.value.forEach((val) => dat.push(val));
-          data.value = [];
-          if (filtersValue.value[idx].option == 1) {
-            eqval(dat, filtersValue.value[idx].value, idx).forEach((val) =>
-              data.value.push(val)
-            );
-          }
-          if (filtersValue.value[idx].option == 2) {
-            includes(dat, filtersValue.value[idx].value, idx).forEach((val) =>
-              data.value.push(val)
-            );
-          }
-        }
-      });
-    };
-
-    const countes = ref([]);
-    const update_countes = (val) => (countes.value = val);
-
     return {
-      ...useFilters(),
-      updateFiltersValue,
       close,
       accept,
-      data,
-      collval,
-      feelFilters,
-      update_countes,
     };
   },
 };
@@ -160,13 +63,14 @@ export default {
 @import "@/app.scss";
 .app_modal {
   pointer-events: all;
-  z-index: 9999999;
   width: 100%;
   position: absolute;
   top: 0;
   left: 0;
   background: transparent;
   .container {
+    position: relative;
+    z-index: 200;
     width: 90%;
     background-color: #fff;
     background-clip: padding-box;
@@ -197,19 +101,12 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: background-color 0.15s ease-in-out,
-          box-shadow 0.15s ease-in-out;
+        transition: all 0.15s ease-out;
         margin: 0;
         margin-right: -10px;
-        .icon {
-          width: inherit;
-          height: inherit;
-          transition: transform 0.15s ease-in-out;
-          @include bg_image("@/assets/cross_black.svg", 100% 100%);
-        }
-        .icon:hover {
-          transform: rotate(90deg);
-        }
+      }
+      .exit:hover {
+        transform: rotate(90deg);
       }
     }
     .content {
@@ -230,36 +127,6 @@ export default {
       .main_grid {
         overflow-x: auto;
         max-width: 100%;
-      }
-      .accept_btn {
-        text-align: right;
-        .btn1 {
-          width: 130px;
-          background: linear-gradient(
-            135deg,
-            hsl(208, 7%, 52%),
-            hsl(208, 7%, 46%),
-            hsl(206, 7%, 40%)
-          );
-        }
-        .btn1:hover {
-          background-color: #5f676d;
-          box-shadow: 0 0 5px 2px rgb(95 103 109 / 25%);
-        }
-        .btn2 {
-          margin-left: 10px;
-          width: 130px;
-          background-color: #6c757d;
-          background: linear-gradient(
-            135deg,
-            hsl(208, 7%, 52%),
-            hsl(208, 7%, 46%),
-            hsl(206, 7%, 40%)
-          );
-        }
-        .btn2:hover {
-          box-shadow: 0 0 5px 2px rgb(2 86 212 / 25%);
-        }
       }
     }
     .footer {

@@ -1,4 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap");
+@import url("https://statix.amocrm.ru/frontend/build/app.80b3bcbf396fe55c2c0f.css");
+@import url("https://statix.amocrm.ru/frontend/build/common.bcc7f8db36a84ca14036.css");
+@import url("https://statix.amocrm.ru/frontend/build/cards.a03fe699d05656506761.css");
 
 @mixin bg_image($url, $size: 100% 100%) {
   background-size: $size;
@@ -38,7 +41,7 @@ $vv: calc(1vh + 1vw);
   font-size: $s;
   line-height: $h;
 }
-.btn {
+.sls_btn {
   cursor: pointer;
   padding: 6px 12px;
   height: 36px;
@@ -48,7 +51,7 @@ $vv: calc(1vh + 1vw);
   border-radius: 5px;
   transition: all 0.15s ease-out;
 }
-.small_btn {
+.sls_small_btn {
   // padding: 4px 6px;
   height: fit-content;
   @include font(400, 14px);
@@ -138,24 +141,24 @@ $vv: calc(1vh + 1vw);
 .btn_light_yellow:disabled {
   background-color: hsl(44, 100%, 75%, 0.5) !important;
 }
-.btn:disabled {
+.sls_btn:disabled {
   cursor: default !important;
 }
-.btn:disabled:hover {
+.sls_btn:disabled:hover {
   box-shadow: none !important;
 }
-.checkbox {
+.sls_checkbox {
   position: absolute;
   z-index: -1;
   opacity: 0;
 }
-.checkbox + label {
+.sls_checkbox + label {
   display: inline-flex;
   align-items: center;
   user-select: none;
   cursor: pointer;
 }
-.checkbox + label::before {
+.sls_checkbox + label::before {
   content: "";
   display: inline-block;
   width: calc(1em + 2px);
@@ -172,22 +175,22 @@ $vv: calc(1vh + 1vw);
   transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     transform 0.15s ease-out, background-image 0.15s ease-out;
 }
-.checkbox:checked + label::before {
+.sls_checkbox:checked + label::before {
   border-color: #757575;
   background-color: #757575;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
 }
-.checkbox:not(:disabled):not(:checked) + label:hover::before {
+.sls_checkbox:not(:disabled):not(:checked) + label:hover::before {
   border-color: #75757591;
 }
-.checkbox:not(:disabled):active + label::before {
+.sls_checkbox:not(:disabled):active + label::before {
   background-color: #75757591;
   border-color: #75757591;
 }
-.checkbox:disabled {
+.sls_checkbox:disabled {
   background-color: #e9ecef !important;
 }
-.input {
+.sls_input {
   width: 100%;
   min-width: 50%;
   height: 34px;
@@ -199,11 +202,11 @@ $vv: calc(1vh + 1vw);
   transition: all 0.2s ease-in-out;
   @include font(400, 16px);
 }
-.input:disabled {
+.sls_input:disabled {
   color: #212529;
   background-color: #e9ecef !important;
 }
-.input:focus {
+.sls_input:focus {
   color: #212529;
   background-color: white;
   border-color: #86b7fe;
@@ -211,7 +214,7 @@ $vv: calc(1vh + 1vw);
   box-shadow: 0 0 0 4px rgb(13 110 253 / 25%);
 }
 .input_uderline {
-  @extend .input;
+  @extend .sls_input;
 
   border-radius: 0;
   border-bottom-width: 2px;
@@ -228,7 +231,7 @@ $vv: calc(1vh + 1vw);
   
 }
 
-.backdrop {
+.sls_backdrop {
   position: fixed;
   top: 0;
   right: 0;
@@ -237,8 +240,8 @@ $vv: calc(1vh + 1vw);
   background-color: transparent;
   z-index: 100;
 }
-.backdrop_with_filter {
-  @extend .backdrop;
+.sls_backdrop_with_filter {
+  @extend .sls_backdrop;
   backdrop-filter: blur(5px);
 }
 

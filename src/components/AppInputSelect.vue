@@ -2,7 +2,7 @@
   <div class="input-select">
     <input
       type="text"
-      class="input"
+      class="sls_input"
       :class="{
         input_uderline: input_uderline,
         black_text: SelectedInTitle && selected?.name,
@@ -12,6 +12,7 @@
       :placeholder="
         SelectedInTitle && selected?.name ? selected?.name : placeholder
       "
+      ref="title"
     />
     <template v-if="showList">
       <div class="backdrop" @click="closeList()" />
@@ -25,6 +26,13 @@
               :key="item.value"
               @click="selectItem(item)"
             >
+              <input
+                v-if="special"
+                type="number"
+                class="sls_input"
+                v-model="item.specialValue"
+                style="width: 100px; min-width: 1%"
+              />
               {{ item.name }}
             </li>
           </ul>
@@ -47,7 +55,7 @@
 
 <script>
 import { ref } from "@vue/reactivity";
-import { watch } from "@vue/runtime-core";
+import { onMounted, onUnmounted, watch } from "@vue/runtime-core";
 export default {
   props: {
     list: Array,
@@ -57,6 +65,7 @@ export default {
     placeholder: { type: String, required: false },
     input_uderline: { type: Boolean, required: false, default: () => false }, // стиль интпута
     SelectedInTitle: { type: Boolean, required: false, default: () => false }, // показывать выбранный итем в тайтле
+    special: { type: Boolean, required: false, default: () => false }, // специальный режим
   },
   emits: ["changeInputValue", "focusIn", "select"],
   setup(props, context) {
@@ -91,10 +100,46 @@ export default {
     const focusIn = () => context.emit("focusIn");
 
     const selectItem = (item) => {
-      context.emit("select", item);
-      closeList();
-      inputValue.value = "";
+      if (!props.special) {
+        context.emit("select", item);
+        closeList();
+        inputValue.value = "";
+      }
     };
+
+    if (props.special)
+      watch(
+        props.list,
+        () => {
+          props.list.map((item) => {
+            if (item.specialValue > item.count) item.specialValue = item.count;
+            if (item.specialValue < 0) item.specialValue = 0;
+          });
+        },
+        { deep: true }
+      );
+
+    onMounted(() => {
+      window.addEventListener("scroll", calcListPosition);
+    });
+
+    onUnmounted(() => window.removeEventListener("scroll", calcListPosition));
+
+    watch(showList, () => {
+      calcListPosition();
+    });
+
+    const calcListPosition = () => {
+      const rect = title.value?.getBoundingClientRect();
+      optionsWidth.value = rect.width - 2 + "px";
+      optionsX.value = rect.x + "px";
+      optionsY.value = rect.bottom + "px";
+    };
+
+    const title = ref(null);
+    const optionsWidth = ref(null);
+    const optionsX = ref(null);
+    const optionsY = ref(null);
 
     return {
       inputValue,
@@ -103,6 +148,10 @@ export default {
       openList,
       selectItem,
       showPlaceholder,
+      title,
+      optionsWidth,
+      optionsX,
+      optionsY,
     };
   },
 };
@@ -128,11 +177,15 @@ export default {
     display: none;
   }
   .list {
+    min-width: v-bind(optionsWidth);
+    left: v-bind(optionsX);
+    top: v-bind(optionsY);
     z-index: 50;
     list-style-type: none;
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
+    position: fixed;
+    // position: absolute;
+    // top: calc(100% + 8px);
+    // left: 0;
     border-radius: 4px;
     list-style: none;
     max-height: 400px;
@@ -147,7 +200,7 @@ export default {
     background-color: white;
     border: 1px solid #ced4da;
     border-radius: 4px;
-    min-width: 100%;
+    // min-width: 100%;
 
     box-sizing: border-box;
     .item {
@@ -238,6 +291,16 @@ export default {
       }
     }
   }
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  display: none;
 }
 .list-enter-active,
 .list-leave-active {

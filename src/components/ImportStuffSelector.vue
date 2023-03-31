@@ -5,6 +5,7 @@
       :class="{ title_checked: show_options, disabled: disabled }"
       @click="open_close_options()"
       @focusout="handleFocusOut"
+      ref="title"
       tabindex="0"
     >
       <p>{{ selected_option.name }}</p>
@@ -12,19 +13,7 @@
         class="arrow"
         v-if="!disabled"
         :class="{ rotate_arrow: show_options }"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-        >
-          <path
-            fill="#757575"
-            d="M8.12 9.29L12 13.17l3.88-3.88a.996.996 0 1 1 1.41 1.41l-4.59 4.59a.996.996 0 0 1-1.41 0L6.7 10.7a.996.996 0 0 1 0-1.41c.39-.38 1.03-.39 1.42 0z"
-          />
-        </svg>
-      </div>
+      ></div>
     </div>
     <transition name="list">
       <div class="options" v-if="show_options" key="a1">
@@ -35,14 +24,8 @@
             optgroup: option.value === 'optgroup',
             selected: option.value == selected_option.value,
           }"
-          :style="{ backgroundColor: option.color }"
           @click="select_option(option)"
         >
-          <template
-            v-if="option.value == selected_option.value && option.color"
-          >
-            <span class="material-icons-outlined opacity-50"> check </span>
-          </template>
           <template v-if="option.optgroup">
             &nbsp;&nbsp;&nbsp;&nbsp;{{ option.name }}
           </template>
@@ -54,7 +37,13 @@
 </template>
 
 <script>
-import { onMounted, ref, nextTick, watch } from "@vue/runtime-core";
+import {
+  onMounted,
+  ref,
+  nextTick,
+  watch,
+  onUnmounted,
+} from "@vue/runtime-core";
 export default {
   props: {
     options_props: {
@@ -85,9 +74,10 @@ export default {
   emits: {
     select: null,
   },
-  setup(props, { emit }) {
+  setup(props, context) {
     const options = ref([]);
     onMounted(() => {
+      window.addEventListener("scroll", calcOptionsPosition);
       nextTick(() => {
         set_options();
       });
@@ -105,11 +95,17 @@ export default {
     );
 
     const show_options = ref(false);
+
+    watch(show_options, () =>
+      context.emit("toggleShowOptions", show_options.value)
+    );
+
     const hide_select = () => {
       show_options.value = false;
     };
     const open_close_options = () => {
       if (!props.disabled) {
+        calcOptionsPosition();
         show_options.value = !show_options.value;
       }
     };
@@ -119,10 +115,26 @@ export default {
 
     const select_option = (option) => {
       if (option.value != "optgroup") {
-        emit("select", option, props.idx);
+        context.emit("select", option, props.idx);
         hide_select();
       }
     };
+
+    onUnmounted(() =>
+      window.removeEventListener("scroll", calcOptionsPosition)
+    );
+
+    const calcOptionsPosition = () => {
+      const rect = title.value?.getBoundingClientRect();
+      optionsWidth.value = rect.width - 2 + "px";
+      optionsX.value = rect.x + "px";
+      optionsY.value = rect.bottom + "px";
+    };
+
+    const title = ref(null);
+    const optionsWidth = ref(null);
+    const optionsX = ref(null);
+    const optionsY = ref(null);
 
     return {
       open_close_options,
@@ -130,6 +142,10 @@ export default {
       show_options,
       options,
       select_option,
+      title,
+      optionsWidth,
+      optionsX,
+      optionsY,
     };
   },
 };
@@ -173,27 +189,28 @@ export default {
   .title {
     height: 34px;
     width: 100%;
-    gap: 8px;
     padding: 6px 12px;
     display: flex;
     align-items: center;
     flex-direction: row;
     justify-content: space-between;
+    gap: 4px;
     background-color: white;
     border: 1px solid #ced4da;
     border-radius: 4px;
     transition: background-color 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
     cursor: pointer;
+    outline: none;
   }
   .title_checked {
     border-color: #86b7fe;
     box-shadow: 0 0 0 2px rgb(13 110 253 / 25%);
   }
   .arrow {
+    width: 16px;
+    height: 12px;
+    @include bg_image("@/assets/arrow_select.svg");
     transition: transform 0.2s ease-in-out;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
   .rotate_arrow {
     transform: rotateX(180deg);
@@ -209,8 +226,9 @@ export default {
     height: 0;
   }
   .options {
-    position: absolute;
-    top: 100%;
+    // position: absolute;
+    // top: 100%;
+    position: fixed;
     max-height: 400px;
     overflow-y: scroll;
     scrollbar-width: 0;
@@ -221,18 +239,18 @@ export default {
     // border-radius: 0 0 4px 4px;
     border-radius: 4px;
     width: fit-content;
-    min-width: 100%;
+    min-width: v-bind(optionsWidth);
+    left: v-bind(optionsX);
+    top: v-bind(optionsY);
     z-index: 5;
     p {
       cursor: pointer;
-      height: 34px;
+      height: 32px;
       width: 100%;
       padding: 6px 12px;
       transition: background-color 0.15s ease-out;
       white-space: pre;
       text-align: start;
-      display: flex;
-      align-items: center;
     }
     p:hover {
       background-color: rgb(13 110 253 / 25%);

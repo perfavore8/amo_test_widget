@@ -10,7 +10,8 @@
 </template>
 
 <script>
-import { nextTick } from "vue";
+import { ref, onMounted, nextTick, watch, computed } from "vue";
+
 export default {
   props: {
     item: {
@@ -22,47 +23,51 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      date_start: "",
-      date_end: "",
-    };
+  emits: {
+    change_filter_value: null,
   },
-  computed: {
-    date() {
-      return {
-        value: this.date_start + "~" + this.date_end,
-      };
-    },
-  },
-  watch: {
-    date: {
-      handler() {
-        this.emit_value();
-      },
-      deep: true,
-    },
-    item() {
-      this.change_value();
-    },
-  },
-  mounted() {
-    this.change_value();
-  },
-  emits: { change_filter_value: null },
-  methods: {
-    change_value() {
+  setup(props, { emit }) {
+    const date_start = ref("");
+    const date_end = ref("");
+
+    const date = computed(() => {
+      return { value: `${date_start.value}~${date_end.value}` };
+    });
+
+    function emit_value() {
+      emit("change_filter_value", date.value, props.idx);
+    }
+
+    function change_value() {
+      if (props.item.value) {
+        const [start, end] = props.item.value.split("~");
+        date_start.value = start;
+        date_end.value = end;
+      } else {
+        date_start.value = "";
+        date_end.value = "";
+      }
+    }
+
+    onMounted(() => {
       nextTick(() => {
-        if (this.item.value != null) {
-          const a = this.item.value.split("~");
-          this.date_start = a[0];
-          this.date_end = a[1];
-        }
+        change_value();
       });
-    },
-    emit_value() {
-      this.$emit("change_filter_value", this.date, this.idx);
-    },
+    });
+
+    watch(
+      () => props.item.value,
+      () => {
+        change_value();
+      }
+    );
+    watch(date, () => emit_value());
+
+    return {
+      date_start,
+      date_end,
+      emit_value,
+    };
   },
 };
 </script>
