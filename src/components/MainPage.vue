@@ -54,7 +54,10 @@
               </button>
             </div>
             <div class="spinner" v-if="showSpinner">
-              <img src="@/assets/91.gif" alt="spinner" />
+              <img
+                src="https://warehouse2.salesup.pro/images/spinner.gif"
+                alt="spinner"
+              />
             </div>
             <template v-else>
               <div class="path">
