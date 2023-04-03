@@ -51,24 +51,12 @@ export default {
       } else {
         delete params.account_id;
         delete params.user;
-        console.debug(
-          "debug",
-          amoWidjetSelf?.apiRequest(
-            "get-products-autocomplete",
-            params,
-            (res) => {
-              console.debug("debug", res, Array.isArray(res));
-              response = res;
-              context.commit("updateProductsAutocomplete", response);
-            }
-          )
-        );
         await amoWidjetSelf?.apiRequest(
           "get-products-autocomplete",
           params,
-          (res) => {
+          async (res) => {
             console.debug(res, Array.isArray(res));
-            response = res;
+            response = await res;
             context.commit("updateProductsAutocomplete", response);
           }
         );
