@@ -159,6 +159,7 @@
                         type="number"
                         class="sls_input"
                         style="min-width: 70px"
+                        v-model="allWhsList[idx][0].specialValue"
                       />
                     </div>
                     <div v-else>
@@ -302,18 +303,25 @@ export default {
       this.products.forEach(() => this.inputValues.push(""));
     },
     addToLead(id) {
-      const idx = this.products.indexOf(
-        this.products.find((product) => product.id === id)
-      );
-      this.allWhsList[idx].forEach((wh) => {
-        if (wh.specialValue !== 0) {
-          this.$store.dispatch("addProduct2", {
-            account_id: 30214471,
-            productId: [id, wh.code].join("%%%"),
-            count: wh.specialValue,
-          });
-        }
-      });
+      const product = this.products.find((product) => product.id === id);
+      const idx = this.products.indexOf(product);
+      if (product.is_service) {
+        this.$store.dispatch("addProduct2", {
+          account_id: 30214471,
+          productId: id,
+          count: this.allWhsList[idx][0].specialValue,
+        });
+      } else {
+        this.allWhsList[idx].forEach((wh) => {
+          if (wh.specialValue !== 0) {
+            this.$store.dispatch("addProduct2", {
+              account_id: 30214471,
+              productId: [id, wh.code].join("%%%"),
+              count: wh.specialValue,
+            });
+          }
+        });
+      }
     },
     async getProductsAutocomplete(q) {
       this.search.value = q;

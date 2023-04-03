@@ -27,6 +27,7 @@
                   type="number"
                   class="sls_input"
                   style="min-width: 70px"
+                  v-model="allWhsList[idx][0].specialValue"
                 />
               </div>
               <div v-else>
@@ -213,7 +214,9 @@ export default {
           if (wh.specialValue) {
             const params = {
               account_id: 30214471,
-              productId: wh.product_id + "%%%" + wh.code,
+              productId: wh.is_service
+                ? wh.product_id
+                : wh.product_id + "%%%" + wh.code,
               count: wh.specialValue,
             };
             this.$store.dispatch("addProduct2", params);
@@ -232,6 +235,7 @@ export default {
           wh.value = wh.code;
           wh.specialValue = 0;
           wh.product_id = product.id;
+          wh.is_service = product.is_service;
         });
         res.push(copyArr);
       });
