@@ -353,6 +353,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+* {
+  box-sizing: border-box;
+}
 .header {
   display: flex;
   flex-direction: column;

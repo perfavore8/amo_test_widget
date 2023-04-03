@@ -113,9 +113,14 @@ export default {
     },
   },
   async mounted() {
-    await this.$store.dispatch("get_fields_properties", {
-      account_id: 30214471,
-    });
+    Promise.all([
+      this.$store.dispatch("get_fields_properties", {
+        account_id: 30214471,
+      }),
+      this.$store.dispatch("get_fields_properties2", {
+        account_id: 30214471,
+      }),
+    ]);
     this.get_categories_options();
     this.feelFilters();
   },
@@ -243,7 +248,7 @@ export default {
       });
     },
     get_categories_options() {
-      this.$store.state.categories.fields_properties.forEach((val) => {
+      this.$store.state.categories.fields_properties2.forEach((val) => {
         let spaces = "";
         for (let i = 1; i < val.level; i++) spaces = spaces + "-    ";
         this.categories_options.push({
@@ -258,6 +263,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+* {
+  box-sizing: border-box;
+}
 .wrapper {
   margin-bottom: 8px;
 }

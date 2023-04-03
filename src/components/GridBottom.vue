@@ -106,6 +106,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+* {
+  box-sizing: border-box;
+}
 .bottom {
   margin-top: 20px;
   margin-bottom: 20px;

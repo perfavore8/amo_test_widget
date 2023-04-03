@@ -7,6 +7,7 @@ export default {
   state: {
     categories: [],
     fields_properties: [],
+    fields_properties2: [],
   },
   getters: {},
   mutations: {
@@ -15,6 +16,9 @@ export default {
     },
     update_fields_properties(state, value) {
       state.fields_properties = [...value];
+    },
+    update_fields_properties2(state, value) {
+      state.fields_properties2 = [...value];
     },
   },
   actions: {
@@ -51,6 +55,25 @@ export default {
           response = res;
           console.debug(response);
           context.commit("update_fields_properties", response);
+        });
+      }
+      return response;
+    },
+    async get_fields_properties2(context, params) {
+      const url = BaseURL + "categories/list";
+      let response = [];
+      if (process.env.NODE_ENV === "development") {
+        const res = await fetch(url + preparation_params(params), {});
+        response = await res.json();
+        console.debug(response);
+        context.commit("update_fields_properties2", response);
+      } else {
+        delete params.account_id;
+        delete params.user;
+        amoWidjetSelf?.apiRequest("categories/list", params, (res) => {
+          response = res;
+          console.debug(response);
+          context.commit("update_fields_properties2", response);
         });
       }
       return response;

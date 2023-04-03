@@ -7,7 +7,8 @@
         minWidth:
           width[idx] != 0
             ? width[idx] + 'px'
-            : (collsCount >= 8 ? 100 : collsCount > 3 ? 90 : 80) / collsCount +
+            : (collsCount >= 8 ? 100 : collsCount > 3 ? 100 : 100) /
+                collsCount +
               '%',
       }"
       v-for="(field, idx) in sortedFields"
@@ -192,6 +193,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+* {
+  box-sizing: border-box;
+}
 .bar_row {
   height: 66px;
   .item {

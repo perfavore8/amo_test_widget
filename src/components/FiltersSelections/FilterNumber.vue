@@ -65,6 +65,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+* {
+  box-sizing: border-box;
+}
 .filter {
   max-width: 80%;
   min-width: 50px;
@@ -93,6 +96,7 @@ export default {
   }
   > input {
     width: 100%;
+    min-width: 70px;
     height: 27px;
     background: #ffffff;
     border: 0.5px solid #c4c4c4;

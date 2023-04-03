@@ -165,6 +165,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+* {
+  box-sizing: border-box;
+}
 @keyframes height_1 {
   from {
     height: 10px;

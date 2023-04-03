@@ -61,6 +61,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+* {
+  box-sizing: border-box;
+}
 .app_modal {
   pointer-events: all;
   width: 100%;
@@ -92,8 +95,8 @@ export default {
       .exit {
         background: transparent;
         border-radius: 0 5px 5px 0;
-        height: 30px;
-        width: 30px;
+        height: 36px;
+        width: 36px;
         margin: 0 auto;
         cursor: pointer;
         border: none;
@@ -116,14 +119,9 @@ export default {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      .filters_list {
-        display: flex;
-        flex-direction: row;
-        gap: 30px;
-        padding: 30px;
-        border: 1px solid #c9c9c9;
-        border-radius: 5px;
-      }
+      overflow: scroll;
+      max-height: calc(100vh - 200px);
+
       .main_grid {
         overflow-x: auto;
         max-width: 100%;

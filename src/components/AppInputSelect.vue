@@ -159,6 +159,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+* {
+  box-sizing: border-box;
+}
 .input-select {
   position: relative;
   .black_text::placeholder {

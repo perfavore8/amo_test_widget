@@ -247,11 +247,11 @@ export default {
         account_id: 30214471,
         q: q,
       });
-      console.debag(q, res);
+      console.debug(q, res);
       res.map((val) => (val.name = val.label));
-      console.debag(res);
+      console.debug(res);
       this.search.list = res;
-      console.debag(this.search.list);
+      console.debug(this.search.list);
     },
     selectCategories(cat) {
       const idx = this.selectedCategories?.indexOf(cat);
@@ -360,6 +360,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+* {
+  box-sizing: border-box;
+}
 .app {
   height: 100%;
   .container1 {
@@ -367,7 +370,6 @@ export default {
     // overflow-y: auto;
     width: 100%;
     height: 100%;
-    min-height: 500px;
     padding: 20px;
     .header {
       margin-bottom: 30px;
@@ -472,6 +474,7 @@ export default {
             padding: 5px 10px 5px 15px;
             height: 30px;
             margin: 5px 0;
+            border: none;
             @include font(400, 15px);
             -webkit-clip-path: polygon(
               0 0,

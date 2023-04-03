@@ -1,5 +1,5 @@
 <template>
-  <div class="grid gap-3">
+  <div class="grid">
     <button
       @click="prev()"
       v-if="page.current != page.first && page.prev != null"
@@ -67,9 +67,24 @@ export default {
 
 <style lang="scss" scoped>
 button {
-  @apply min-w-[32px] h-8 rounded-md bg-slate-100 flex items-center justify-center px-1 hover:bg-slate-200 outline-slate-300;
+  min-width: 32px;
+  height: 32px;
+  border-radius: 0.375rem;
+  background-color: rgb(241, 245, 249);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  outline-color: #cbd5e1;
+  border: none;
+}
+button:hover {
+  background-color: rgb(226 232 240);
 }
 .grid {
+  display: grid;
+  gap: 0.75rem;
   grid-template-areas: "a b c d e f g";
   grid-template-columns: repeat(7, 1fr);
 }
@@ -95,6 +110,6 @@ button {
   grid-area: g;
 }
 .current {
-  @apply bg-slate-200;
+  background-color: rgb(226 232 240);
 }
 </style>

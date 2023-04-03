@@ -179,15 +179,27 @@ export default {
         })
         .filter((val) => val[1].visible);
     },
+    categories() {
+      const obj = {};
+      this.$store.state.categories.fields_properties2.forEach(
+        (val) => (obj[val.id] = val.name)
+      );
+      return obj;
+    },
   },
   async mounted() {
     this.isLoading = true;
-    await this.$store.dispatch("getTableConfig", {
-      account_id: 30214471,
-      code: "",
-    });
-    await this.$store.dispatch("getAllFields", { account_id: 30214471 });
-    await this.get_products(this.productsParams);
+    await Promise.all([
+      this.$store.dispatch("getTableConfig", {
+        account_id: 30214471,
+        code: "",
+      }),
+      this.$store.dispatch("get_fields_properties2", {
+        account_id: 30214471,
+      }),
+      this.$store.dispatch("getAllFields", { account_id: 30214471 }),
+      this.get_products(this.productsParams),
+    ]);
     this.isLoading = false;
   },
   deactivated() {},
@@ -284,6 +296,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+* {
+  box-sizing: border-box;
+}
 .item {
   padding: 10px;
   padding-left: 15px;

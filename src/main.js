@@ -1,8 +1,8 @@
 import { createApp, h } from "vue";
 import App from "./App.vue";
 import store from "./store";
-import "@/tailwind.css";
-import "material-icons/iconfont/material-icons.css";
+// import "@/tailwind.css";
+// import "material-icons/iconfont/material-icons.css";
 
 export let amoWidjetSelf = null;
 
@@ -48,8 +48,10 @@ const WidgetVueProductsSearch = {
 
 // window.WidgetVueProductsSearch = WidgetVueProductsSearch;
 
-// eslint-disable-next-line no-undef
-$("body").data("WidgetVueProductsSearch", WidgetVueProductsSearch);
+if (process.env.NODE_ENV !== "development") {
+  // eslint-disable-next-line no-undef
+  $("body").data("WidgetVueProductsSearch", WidgetVueProductsSearch);
+}
 
 export default WidgetVueProductsSearch;
 

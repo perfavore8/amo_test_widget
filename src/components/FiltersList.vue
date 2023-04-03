@@ -172,6 +172,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+* {
+  box-sizing: border-box;
+}
 .filters {
   display: flex;
   flex-direction: row;

@@ -127,6 +127,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
+* {
+  box-sizing: border-box;
+}
 .filter {
   max-width: 100px;
   min-width: 50px;
