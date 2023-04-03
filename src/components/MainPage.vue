@@ -140,7 +140,12 @@
                 <div class="card_footer">
                   <button
                     class="sls_btn btn_del"
-                    @click="addToLead(product.id)"
+                    @click="
+                      () => {
+                        addToLead(product.id);
+                        return false;
+                      }
+                    "
                   >
                     Добавить к сделке
                   </button>
@@ -243,10 +248,11 @@ export default {
     },
     async getProductsAutocomplete(q) {
       this.search.value = q;
-      const res = await this.$store.dispatch("getProductsAutocomplete", {
+      await this.$store.dispatch("getProductsAutocomplete", {
         account_id: 30214471,
         q: q,
       });
+      const res = this.$store.state.products.productsAutocomplete;
       console.debug(q, res);
       res.map((val) => (val.name = val.label));
       console.debug(res);

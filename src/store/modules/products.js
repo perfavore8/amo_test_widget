@@ -8,6 +8,7 @@ const { preparation_params } = usePreparationQueryParams();
 export default {
   state: {
     products: [],
+    productsAutocomplete: [],
     allProducts: [],
     meta: {
       links: {},
@@ -24,6 +25,9 @@ export default {
   mutations: {
     updateProducts(state, value) {
       state.products = [...value];
+    },
+    updateProductsAutocomplete(state, value) {
+      state.productsAutocomplete = [...value];
     },
     updateAllProducts(state, value) {
       state.allProducts = [...preparationProducts(value)];
@@ -42,6 +46,7 @@ export default {
       if (process.env.NODE_ENV === "development") {
         const res = await fetch(url + preparation_params(params), {});
         response = await res.json();
+        context.commit("updateProductsAutocomplete", response);
       } else {
         delete params.account_id;
         delete params.user;
@@ -51,6 +56,7 @@ export default {
           (res) => {
             console.debug(res, Array.isArray(res));
             response = res;
+            context.commit("updateProductsAutocomplete", response);
           }
         );
       }
