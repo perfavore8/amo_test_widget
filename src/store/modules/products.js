@@ -41,27 +41,33 @@ export default {
   },
   actions: {
     async getProductsAutocomplete(context, params) {
-      const url = BaseURL + "get-products-autocomplete";
-      let response = [];
-      if (process.env.NODE_ENV === "development") {
-        const res = await fetch(url + preparation_params(params), {});
-        response = await res.json();
-        console.debug("123", response);
-        context.commit("updateProductsAutocomplete", response);
-      } else {
-        delete params.account_id;
-        delete params.user;
-        await amoWidjetSelf?.apiRequest(
-          "get-products-autocomplete",
-          params,
-          async (res) => {
-            console.debug(res, Array.isArray(res));
-            response = await res;
+      const myPromise = await new Promise((resolve) => {
+        const url = BaseURL + "get-products-autocomplete";
+        let response = [];
+        (async () => {
+          if (process.env.NODE_ENV === "development") {
+            const res = await fetch(url + preparation_params(params), {});
+            response = await res.json();
+            console.debug("123", response);
             context.commit("updateProductsAutocomplete", response);
+            resolve(response);
+          } else {
+            delete params.account_id;
+            delete params.user;
+            amoWidjetSelf?.apiRequest(
+              "get-products-autocomplete",
+              params,
+              async (res) => {
+                console.debug(res, Array.isArray(res));
+                response = await res;
+                context.commit("updateProductsAutocomplete", response);
+                resolve(response);
+              }
+            );
           }
-        );
-      }
-      return response;
+        })();
+      });
+      return myPromise;
     },
     async getProducts(context, params) {
       const url = BaseURL + "products";

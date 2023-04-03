@@ -248,11 +248,8 @@ export default {
           : 1,
       });
       const res = this.$store.state.products.productsAutocomplete;
-      console.debug(q, res);
       res.map((val) => (val.name = val.label));
-      console.debug(res);
       this.search.list = res;
-      console.debug(this.search.list);
     },
     selectCategories(cat) {
       const idx = this.selectedCategories?.indexOf(cat);
