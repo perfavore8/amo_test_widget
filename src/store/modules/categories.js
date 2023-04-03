@@ -23,22 +23,28 @@ export default {
   },
   actions: {
     async getCategories(context, params) {
-      const url = BaseURL + "categories";
-      let response = [];
-      if (process.env.NODE_ENV === "development") {
-        const res = await fetch(url + preparation_params(params), {});
-        response = await res.json();
-        context.commit("updateCategories", response);
-      } else {
-        delete params.account_id;
-        delete params.user;
-        amoWidjetSelf?.apiRequest("categories", params, (res) => {
-          console.debug(res);
-          response = res;
-          context.commit("updateCategories", response);
-        });
-      }
-      return response;
+      const myPromise = await new Promise((resolve) => {
+        const url = BaseURL + "categories";
+        let response = [];
+        (async () => {
+          if (process.env.NODE_ENV === "development") {
+            const res = await fetch(url + preparation_params(params), {});
+            response = await res.json();
+            context.commit("updateCategories", response);
+            resolve(response);
+          } else {
+            delete params.account_id;
+            delete params.user;
+            amoWidjetSelf?.apiRequest("categories", params, async (res) => {
+              console.debug(res);
+              response = await res;
+              context.commit("updateCategories", response);
+              resolve(response);
+            });
+          }
+        })();
+      });
+      return myPromise;
     },
     async get_fields_properties(context, params) {
       const url = BaseURL + "category/list";

@@ -50,7 +50,7 @@
                 :key="cat"
                 @click="selectCategories(cat)"
               >
-                {{ cat.name }}
+                {{ cat?.name }}
               </button>
             </div>
             <div class="spinner" v-if="showSpinner">

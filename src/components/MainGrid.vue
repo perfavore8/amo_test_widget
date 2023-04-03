@@ -305,6 +305,7 @@ export default {
   min-width: 50px;
   .input-select:deep(.item) {
     justify-content: flex-start;
+    gap: 8px;
   }
   .input {
     width: calc(100% - 12px);
