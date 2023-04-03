@@ -33,10 +33,12 @@
                 <AppInputSelect
                   style="min-width: 70px"
                   :list="
-                    allWhsList[idx].filter((val) =>
-                      val?.name
-                        ?.toLowerCase()
-                        ?.includes(inputValues[idx]?.toLowerCase())
+                    allWhsList[idx]?.filter(
+                      (val) =>
+                        val?.name
+                          ?.toLowerCase()
+                          ?.includes(inputValues[idx]?.toLowerCase()) &&
+                        (row.allow_add_with_zero_count || !(val.count < 1))
                     )
                   "
                   :special="true"
@@ -159,13 +161,6 @@ export default {
     all_fields() {
       return this.$store.state.fields.all_fields;
     },
-    allWhs() {
-      const arr = this.all_fields.filter(
-        (field) => field.type === 13 && field.code !== "whs"
-      );
-      arr.map((wh) => (wh.value = wh.code));
-      return arr;
-    },
     tableConfig() {
       return this.$store.state.fields.tableConfig;
     },
@@ -231,10 +226,10 @@ export default {
       const res = [];
 
       this.products.forEach((product) => {
-        const copyArr = this.allWhs.map((a) => ({ ...a }));
+        const copyArr = product.whs?.map((a) => ({ ...a }));
         copyArr.map((wh) => {
-          wh.count = product?.fields?.[wh.code]?.count;
           wh.name = wh.name + "   |   " + wh.count;
+          wh.value = wh.code;
           wh.specialValue = 0;
           wh.product_id = product.id;
         });
@@ -273,6 +268,7 @@ export default {
       await this.$store.dispatch("getAllProducts", {
         ...params,
         account_id: 30214471,
+        leadId: 29768593,
       });
       this.fillInputValues();
     },

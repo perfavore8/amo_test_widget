@@ -53,97 +53,139 @@
                 {{ cat.name }}
               </button>
             </div>
-            <div class="path">
-              <div class="categories grid">
+            <div class="spinner" v-if="showSpinner">
+              <img src="@/assets/91.gif" alt="spinner" />
+            </div>
+            <template v-else>
+              <div class="path">
+                <div class="categories grid">
+                  <div
+                    class="card"
+                    v-for="cat in categories"
+                    :key="cat"
+                    @click="selectCategories(cat)"
+                  >
+                    <div class="row title">
+                      <div class="name"></div>
+                      <div class="value">{{ cat.name }}</div>
+                    </div>
+                    <div class="row" />
+                  </div>
+                </div>
+              </div>
+              <div class="products grid">
+                <label v-if="products.length == 0" class="text">
+                  Ничего не найдено
+                </label>
                 <div
                   class="card"
-                  v-for="cat in categories"
-                  :key="cat"
-                  @click="selectCategories(cat)"
+                  v-for="(product, idx) in products"
+                  :key="product"
                 >
                   <div class="row title">
                     <div class="name"></div>
-                    <div class="value">{{ cat.name }}</div>
+                    <div class="value">{{ product?.fields?.name }}</div>
                   </div>
-                  <div class="row" />
-                </div>
-              </div>
-            </div>
-            <div class="products grid">
-              <label v-if="products.length == 0" class="text">
-                Ничего не найдено
-              </label>
-              <div class="card" v-for="product in products" :key="product">
-                <div class="row title">
-                  <div class="name"></div>
-                  <div class="value">{{ product?.fields?.name }}</div>
-                </div>
-                <div class="rows">
-                  <template v-for="field in sortedFields" :key="field">
-                    <template v-if="field.type === 11">
-                      <div class="row">
-                        <div class="name font-medium">{{ field.name }} :</div>
-                        <div class="value">
-                          {{
-                            product?.fields[field.code]?.cost
-                              ? product?.fields[field.code]?.cost
-                              : "" + " " + product?.fields[field.code]?.currency
-                              ? product?.fields[field.code]?.currency
-                              : ""
-                          }}
-                        </div>
-                      </div>
-                      <template v-if="product?.fields[field.code]?.is_nds">
-                        <div class="row ml-1">
-                          <div class="name">НДС :</div>
-                          <div class="value">
-                            {{ product?.fields[field.code]?.nds }}
-                          </div>
-                        </div>
-                        <div class="row ml-1">
-                          <div class="name">НДС включен в цену :</div>
+                  <div class="rows">
+                    <template v-for="field in sortedFields" :key="field">
+                      <template v-if="field.type === 11">
+                        <div class="row">
+                          <div class="name font-medium">{{ field.name }} :</div>
                           <div class="value">
                             {{
-                              product?.fields[field.code]?.is_price_include_nds
-                                ? "Да"
-                                : "Нет"
+                              product?.fields[field.code]?.cost
+                                ? product?.fields[field.code]?.cost
+                                : "" +
+                                  " " +
+                                  product?.fields[field.code]?.currency
+                                ? product?.fields[field.code]?.currency
+                                : ""
                             }}
                           </div>
                         </div>
+                        <template v-if="product?.fields[field.code]?.is_nds">
+                          <div class="row ml-1">
+                            <div class="name">НДС :</div>
+                            <div class="value">
+                              {{ product?.fields[field.code]?.nds }}
+                            </div>
+                          </div>
+                          <div class="row ml-1">
+                            <div class="name">НДС включен в цену :</div>
+                            <div class="value">
+                              {{
+                                product?.fields[field.code]
+                                  ?.is_price_include_nds
+                                  ? "Да"
+                                  : "Нет"
+                              }}
+                            </div>
+                          </div>
+                        </template>
                       </template>
-                    </template>
-                    <template v-else-if="field.type === 13">
-                      <div class="row">
-                        <div class="name font-medium">{{ field.name }} :</div>
-                        <div class="value"></div>
-                      </div>
-                      <div class="row ml-1">
-                        <div class="name">На складе :</div>
+                      <template v-else-if="field.type === 13">
+                        <div class="row">
+                          <div class="name font-medium">{{ field.name }} :</div>
+                          <div class="value"></div>
+                        </div>
+                        <div class="row ml-1">
+                          <div class="name">На складе :</div>
+                          <div class="value">
+                            {{ product?.fields[field.code]?.count }}
+                          </div>
+                        </div>
+                        <div class="row ml-1">
+                          <div class="name">В резерве :</div>
+                          <div class="value">
+                            {{ product?.fields[field.code]?.reserve }}
+                          </div>
+                        </div>
+                      </template>
+                      <template v-else-if="field.code === 'name'" />
+                      <div class="row" v-else>
+                        <div class="name">{{ field.name }} :</div>
                         <div class="value">
-                          {{ product?.fields[field.code]?.count }}
+                          {{ product?.fields[field.code] }}
                         </div>
                       </div>
-                      <div class="row ml-1">
-                        <div class="name">В резерве :</div>
-                        <div class="value">
-                          {{ product?.fields[field.code]?.reserve }}
-                        </div>
-                      </div>
                     </template>
-                    <template v-else-if="field.code === 'name'" />
-                    <div class="row" v-else>
-                      <div class="name">{{ field.name }} :</div>
-                      <div class="value">{{ product?.fields[field.code] }}</div>
+                  </div>
+                  <div class="card_footer">
+                    <div v-if="product.is_service">
+                      <input
+                        type="number"
+                        class="sls_input"
+                        style="min-width: 70px"
+                      />
                     </div>
-                  </template>
-                </div>
-                <div class="card_footer">
-                  <div class="sls_btn btn_del" @click="addToLead(product.id)">
-                    Добавить к сделке
+                    <div v-else>
+                      <AppInputSelect
+                        style="min-width: 70px"
+                        :list="
+                          allWhsList[idx]?.filter(
+                            (val) =>
+                              val?.name
+                                ?.toLowerCase()
+                                ?.includes(inputValues[idx]?.toLowerCase()) &&
+                              (product.allow_add_with_zero_count ||
+                                !(val.count < 1))
+                          )
+                        "
+                        :special="true"
+                        :requestDelay="0"
+                        :countLettersReq="0"
+                        @changeInputValue="
+                          (value) => (inputValues[idx] = value)
+                        "
+                      />
+                    </div>
+                    <div class="sls_btn btn_del" @click="addToLead(product.id)">
+                      Добавить к сделке
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </template>
           </div>
         </transition>
       </div>
@@ -182,6 +224,9 @@ export default {
         value: "",
         list: [],
       },
+      inputValues: [],
+      allWhsList: [],
+      showSpinner: false,
       // fields: [
       //   { name: "Количество", change: true },
       //   { name: "Поставщик", change: true },
@@ -220,47 +265,73 @@ export default {
     // this.get_data_categories();
     // this.feel_available_data();
     console.debug("amoWidjetSelf", amoWidjetSelf);
-    await this.getCategories(0);
-    // this.selectCategories(this.categories[0]);
+    await Promise.all([
+      this.getCategories(0),
+      this.$store.dispatch("getAllFields", { account_id: 30214471 }),
+    ]);
+    this.selectCategories(this.categories[0]);
   },
   watch: {
-    show_cards() {
+    async show_cards() {
       if (!this.show_cards) {
-        this.selected_categories = [];
-        this.sel_idx = 0;
+        this.selectedCategories = [];
+        await this.getCategories(0);
       }
     },
   },
   methods: {
+    fillAllWhsList() {
+      const res = [];
+
+      this.products.forEach((product) => {
+        const copyArr = product.whs?.map((a) => ({ ...a }));
+        copyArr.map((wh) => {
+          wh.name = wh.name + "   |   " + wh.count;
+          wh.value = wh.code;
+          wh.specialValue = 0;
+        });
+        res.push(copyArr);
+      });
+
+      this.allWhsList = res;
+    },
+    fillInputValues() {
+      this.products.forEach(() => this.inputValues.push(""));
+    },
     addToLead(id) {
-      this.$store.dispatch("addProduct", {
-        account_id: 30214471,
-        productId: id,
+      const idx = this.products.indexOf(
+        this.products.find((product) => product.id === id)
+      );
+      this.allWhsList[idx].forEach((wh) => {
+        if (wh.specialValue !== 0) {
+          this.$store.dispatch("addProduct2", {
+            account_id: 30214471,
+            productId: [id, wh.code].join("%%%"),
+            count: wh.specialValue,
+          });
+        }
       });
     },
     async getProductsAutocomplete(q) {
       this.search.value = q;
-      await this.$store.dispatch("getProductsAutocomplete", {
-        account_id: 30214471,
-        q: q,
-        category_id: this.selectedCategories.at(-1)?.id
-          ? this.selectedCategories.at(-1)?.id
-          : 1,
-      });
+      const category_id = this.selectedCategories.at(-1)?.id;
+      const params = { account_id: 30214471, q: q };
+      if (category_id) params.category_id = category_id;
+      await this.$store.dispatch("getProductsAutocomplete", params);
       const res = this.$store.state.products.productsAutocomplete;
       res.map((val) => (val.name = val.label));
       this.search.list = res;
     },
-    selectCategories(cat) {
+    async selectCategories(cat) {
+      this.showSpinner = true;
       const idx = this.selectedCategories?.indexOf(cat);
       if (idx !== -1) {
         this.selectedCategories.splice(idx, 9999);
       }
       this.selectedCategories.push(cat);
-
-      this.getCategories(cat.id);
-      this.getProducts(cat.id);
-      if (this.selectedCategories.length === 1) this.getFields(cat.id);
+      await Promise.all([this.getCategories(cat.id), this.getProducts(cat.id)]);
+      if (this.selectedCategories.length === 1) await this.getFields(cat.id);
+      this.showSpinner = false;
     },
     async getCategories(id) {
       await this.$store.dispatch("getCategories", {
@@ -273,6 +344,8 @@ export default {
         account_id: 30214471,
         category_id: id,
       });
+      this.fillInputValues();
+      this.fillAllWhsList();
     },
     async getFields(id) {
       await this.$store.dispatch("getFields", {
@@ -399,6 +472,7 @@ export default {
             border: none;
             transition: all 0.15s ease-ount;
             filter: contrast(0.5);
+            transform: rotateX(180deg);
             @include bg_image(
               "https://www.svgrepo.com/show/510838/arrow-up-sm.svg",
               100%
@@ -411,7 +485,7 @@ export default {
               "https://www.svgrepo.com/show/510838/arrow-up-sm.svg",
               100%
             );
-            transform: rotateX(180deg);
+            transform: rotateX(0deg);
             background-position: center center;
           }
           .sls_checkbox:not(:checked) + label:hover::before {
@@ -680,7 +754,7 @@ export default {
         }
         .categories {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
           .card {
             cursor: pointer;
             width: 100%;
@@ -688,11 +762,15 @@ export default {
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
+            padding: 12px 18px;
             .row {
               width: 100%;
               .value {
                 text-align: center;
               }
+            }
+            .title {
+              padding: 0;
             }
             .row:first-child {
               border-bottom: none;
@@ -701,6 +779,12 @@ export default {
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 2; /* number of lines to show */
+                line-clamp: 2;
+                -webkit-box-orient: vertical;
+                min-height: 54px;
               }
             }
           }
@@ -708,7 +792,7 @@ export default {
         .products {
           margin-top: 30px;
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
           .card {
             width: 100%;
             display: flex;
@@ -725,9 +809,31 @@ export default {
           width: 100%;
           display: flex;
           flex-direction: row;
-          justify-content: flex-end;
+          justify-content: space-between;
+          gap: 8px;
           align-items: flex-end;
+          .input-select:deep(.item) {
+            justify-content: flex-start;
+            gap: 8px;
+          }
+          .input {
+            width: calc(100% - 12px);
+            height: calc(100% - 12px);
+            outline: none;
+            border: none;
+            border: 1px solid #c4c4c4;
+            border-radius: 4px;
+            padding: 5px;
+            background: transparent;
+            appearance: none;
+          }
+          input::-webkit-outer-spin-button,
+          input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
           .btn_del {
+            white-space: nowrap;
             color: #fff;
             background-color: #a2a9ae;
           }
@@ -751,5 +857,11 @@ export default {
 .rows-leave-to {
   opacity: 0;
   transform: translateY(-40px);
+}
+
+.spinner {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 </style>

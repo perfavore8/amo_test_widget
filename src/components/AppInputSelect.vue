@@ -216,7 +216,7 @@ export default {
       width: 100%;
       padding: 6px 12px;
       transition: background-color 0.15s ease-out;
-      white-space: pre;
+      white-space: nowrap;
       border-top: 1px solid #ced4da7d;
     }
     .item:hover {

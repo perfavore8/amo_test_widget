@@ -108,6 +108,8 @@ export default {
       } else {
         delete params.account_id;
         delete params.user;
+        delete params.leadId;
+        params.leadId = amoWidjetSelf?.AMOCRM.data.current_card.id;
         amoWidjetSelf?.apiRequest("products/filtered", params, (res) => {
           response = res;
           console.debug(response);

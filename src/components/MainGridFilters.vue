@@ -191,6 +191,7 @@ export default {
       this.$store.dispatch("getAllProducts", {
         ...this.productsParams,
         account_id: 30214471,
+        leadId: 29768593,
       });
     },
     change_filter_value(new_obj, idx) {
