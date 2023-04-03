@@ -187,7 +187,7 @@ export default {
       return obj;
     },
   },
-  async mounted() {
+  async activated() {
     this.isLoading = true;
     await Promise.all([
       this.$store.dispatch("getTableConfig", {

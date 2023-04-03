@@ -138,17 +138,9 @@
                   </template>
                 </div>
                 <div class="card_footer">
-                  <button
-                    class="sls_btn btn_del"
-                    @click="
-                      () => {
-                        addToLead(product.id);
-                        return false;
-                      }
-                    "
-                  >
+                  <div class="sls_btn btn_del" @click="addToLead(product.id)">
                     Добавить к сделке
-                  </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -379,7 +371,6 @@ export default {
     // overflow-y: auto;
     width: 100%;
     height: 100%;
-    padding: 20px;
     .header {
       margin-bottom: 30px;
     }

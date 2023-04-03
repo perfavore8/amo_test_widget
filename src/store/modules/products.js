@@ -46,11 +46,24 @@ export default {
       if (process.env.NODE_ENV === "development") {
         const res = await fetch(url + preparation_params(params), {});
         response = await res.json();
+        console.debug("123", response);
         context.commit("updateProductsAutocomplete", response);
       } else {
         delete params.account_id;
         delete params.user;
-        amoWidjetSelf?.apiRequest(
+        console.debug(
+          "debug",
+          amoWidjetSelf?.apiRequest(
+            "get-products-autocomplete",
+            params,
+            (res) => {
+              console.debug("debug", res, Array.isArray(res));
+              response = res;
+              context.commit("updateProductsAutocomplete", response);
+            }
+          )
+        );
+        await amoWidjetSelf?.apiRequest(
           "get-products-autocomplete",
           params,
           (res) => {
