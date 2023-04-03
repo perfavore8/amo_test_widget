@@ -13,7 +13,19 @@
         class="arrow"
         v-if="!disabled"
         :class="{ rotate_arrow: show_options }"
-      ></div>
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <path
+            fill="#757575"
+            d="M8.12 9.29L12 13.17l3.88-3.88a.996.996 0 1 1 1.41 1.41l-4.59 4.59a.996.996 0 0 1-1.41 0L6.7 10.7a.996.996 0 0 1 0-1.41c.39-.38 1.03-.39 1.42 0z"
+          />
+        </svg>
+      </div>
     </div>
     <transition name="list">
       <div class="options" v-if="show_options" key="a1">
@@ -207,10 +219,10 @@ export default {
     box-shadow: 0 0 0 2px rgb(13 110 253 / 25%);
   }
   .arrow {
-    width: 16px;
-    height: 12px;
-    @include bg_image("@/assets/arrow_select.svg");
     transition: transform 0.2s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .rotate_arrow {
     transform: rotateX(180deg);

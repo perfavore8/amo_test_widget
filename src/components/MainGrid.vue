@@ -51,42 +51,43 @@
                 <span v-if="item[0].split('.').length < 2">
                   {{
                     item[0] == "category"
-                      ? categories[row.fields[item[0]]]
-                      : item[1].type == 9
-                      ? !!row.fields[item[0]]
+                      ? categories?.[row.fields?.[item?.[0]]]
+                      : item?.[1]?.type == 9
+                      ? !!row.fields?.[item[0]]
                         ? "Да"
                         : "Нет"
                       : item[0] == "cost_price"
-                      ? row.fields[item[0]]
-                        ? Math.round(row.fields[item[0]] * 100) / 100
+                      ? row.fields?.[item[0]]
+                        ? Math.round(row.fields?.[item[0]] * 100) / 100
                         : "0"
-                      : row.fields[item[0]]
+                      : row.fields?.[item[0]]
                   }}
                 </span>
                 <span v-else>
                   {{
                     item[0].split(".")[1] == "cost"
                       ? row.fields?.[item[0].split(".")[0]]?.[
-                          item[0].split(".")[1]
+                          item[0]?.split(".")?.[1]
                         ] == undefined
                         ? "0"
-                        : row.fields?.[item[0].split(".")[0]]?.[
-                            item[0].split(".")[1]
+                        : row.fields?.[item[0]?.split(".")?.[0]]?.[
+                            item[0]?.split(".")?.[1]
                           ] +
                           " " +
-                          (row.fields?.[item[0].split(".")[0]]?.currency ==
+                          (row.fields?.[item[0]?.split(".")?.[0]]?.currency ==
                             undefined ||
-                          row.fields?.[item[0].split(".")[0]]?.currency == null
+                          row.fields?.[item[0]?.split(".")?.[0]]?.currency ==
+                            null
                             ? ""
-                            : row.fields?.[item[0].split(".")[0]]?.currency)
+                            : row.fields?.[item[0]?.split(".")?.[0]]?.currency)
                       : item[1].type == 9
-                      ? !!row.fields?.[item[0].split(".")[0]]?.[
-                          item[0].split(".")[1]
+                      ? !!row.fields?.[item[0]?.split(".")?.[0]]?.[
+                          item[0]?.split(".")?.[1]
                         ]
                         ? "Да"
                         : "Нет"
-                      : row.fields?.[item[0].split(".")[0]]?.[
-                          item[0].split(".")[1]
+                      : row.fields?.[item[0]?.split(".")?.[0]]?.[
+                          item[0]?.split(".")?.[1]
                         ]
                   }}
                 </span>

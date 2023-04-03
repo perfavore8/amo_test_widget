@@ -49,7 +49,7 @@ const WidgetVueProductsSearch = {
 // window.WidgetVueProductsSearch = WidgetVueProductsSearch;
 
 // eslint-disable-next-line no-undef
-$("body").data("WidgetVueProductsSearch", WidgetVueProductsSearch);
+// $("body").data("WidgetVueProductsSearch", WidgetVueProductsSearch);
 
 export default WidgetVueProductsSearch;
 

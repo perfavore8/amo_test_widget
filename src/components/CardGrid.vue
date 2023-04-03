@@ -464,7 +464,7 @@ export default {
     width: 25px;
     height: 25px;
     cursor: pointer;
-    @include bg_image("@/assets/edit.svg");
+    // @include bg_image("@/assets/edit.svg");
   }
 }
 .count {

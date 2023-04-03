@@ -149,47 +149,6 @@
             </div>
           </div>
         </transition>
-        <div class="bottom">
-          <div class="row" v-for="(row, idx) in rows" :key="row">
-            <div class="row_title" @click="toggleShowData(idx)">
-              <label>
-                {{ row }}
-              </label>
-              <button class="sls_btn" @click="handleDeleteItem(row, idx)">
-                <div class="icon"></div>
-              </button>
-            </div>
-            <transition name="rows">
-              <div class="rows" v-if="show_data[idx]">
-                <div class="row" v-for="(item, index) in fields" :key="item">
-                  <div class="name">{{ item.name }}</div>
-                  <input
-                    class="sls_input"
-                    type="number"
-                    v-model="countes[idx].count"
-                    v-if="index == 0"
-                  />
-                  <input
-                    class="sls_input"
-                    v-model="countes[idx].company"
-                    v-else-if="index == 1"
-                  />
-                  <input
-                    class="sls_input"
-                    v-model="rows[idx][search_idx(item.name)]"
-                    v-else-if="item.change"
-                  />
-                  <div class="value" v-else>
-                    {{ search_value(item.name, row) }}
-                  </div>
-                </div>
-                <div class="footer">
-                  <button class="sls_btn btn1">возврат</button>
-                </div>
-              </div>
-            </transition>
-          </div>
-        </div>
       </div>
       <div class="footer"></div>
     </div>
@@ -219,7 +178,7 @@ export default {
   },
   data() {
     return {
-      show_cards: true,
+      show_cards: false,
       show_filters: false,
       selectedCategories: [],
       search: {
@@ -288,8 +247,11 @@ export default {
         account_id: 30214471,
         q: q,
       });
+      console.debag(q, res);
       res.map((val) => (val.name = val.label));
+      console.debag(res);
       this.search.list = res;
+      console.debag(this.search.list);
     },
     selectCategories(cat) {
       const idx = this.selectedCategories?.indexOf(cat);
@@ -600,37 +562,7 @@ export default {
           width: calc(100% - 30px);
           margin-bottom: 5px;
           @include font(400, 15px);
-          .row_title {
-            padding: 15px;
-            width: 100%;
-            background-color: #9bb7e74a;
-            padding-bottom: 20px;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            .sls_btn {
-              background: transparent;
-              height: 17px;
-              width: 17px;
-              margin: 0 auto;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin: 0;
-              padding: 0;
-              .icon {
-                width: inherit;
-                height: inherit;
-                transition: background-size 0.15s ease-in-out;
-                @include bg_image("@/assets/cross_black.svg", 90%);
-              }
-            }
-            .sls_btn:hover {
-              .icon {
-                background-size: 100%;
-              }
-            }
-          }
+
           .rows {
             display: flex;
             flex-direction: column;
