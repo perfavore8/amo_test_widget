@@ -119,8 +119,6 @@ export default {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      overflow: scroll;
-      max-height: calc(100vh - 200px);
 
       .main_grid {
         overflow-x: auto;

@@ -251,6 +251,9 @@ export default {
       await this.$store.dispatch("getProductsAutocomplete", {
         account_id: 30214471,
         q: q,
+        category_id: this.selectedCategories.at(-1)?.id
+          ? this.selectedCategories.at(-1)?.id
+          : 1,
       });
       const res = this.$store.state.products.productsAutocomplete;
       console.debug(q, res);

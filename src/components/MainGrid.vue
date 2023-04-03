@@ -343,6 +343,7 @@ export default {
   width: 100%;
   display: block;
   overflow: scroll;
+  max-height: calc(100vh - 550px);
 }
 .bar_row {
   height: 66px;
