@@ -37,7 +37,7 @@
         <transition name="rows">
           <div class="bottom" v-if="show_cards">
             <div class="links">
-              <button
+              <div
                 class="triangle"
                 :class="{
                   triangle_last:
@@ -51,7 +51,7 @@
                 @click="selectCategories(cat)"
               >
                 {{ cat?.name }}
-              </button>
+              </div>
             </div>
             <div class="spinner" v-if="showSpinner">
               <img
@@ -178,6 +178,15 @@
                         :special="true"
                         :requestDelay="0"
                         :countLettersReq="0"
+                        :allow_add_with_zero_count="
+                          product.allow_add_with_zero_count
+                        "
+                        :placeholder="
+                          allWhsList[idx].reduce(
+                            (sum, wh) => (sum += wh.specialValue),
+                            0
+                          )
+                        "
                         @changeInputValue="
                           (value) => (inputValues[idx] = value)
                         "

@@ -188,11 +188,7 @@ export default {
         });
       this.filter = filter;
       this.$store.commit("updateProductsParams", { filter: filter, page: 1 });
-      this.$store.dispatch("getAllProducts", {
-        ...this.productsParams,
-        account_id: 30214471,
-        leadId: 29768593,
-      });
+      this.$emit("confirm");
     },
     change_filter_value(new_obj, idx) {
       Object.assign(this.filtersValue[idx], new_obj);
@@ -268,7 +264,11 @@ export default {
   box-sizing: border-box;
 }
 .wrapper {
-  margin-bottom: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 12px;
 }
 .filters {
   display: flex;
@@ -276,11 +276,9 @@ export default {
   // justify-content: space-around;
   flex-wrap: wrap;
   gap: 5px;
-  margin-bottom: 12px;
   // background-color: rgba(0, 0, 0, 0.05);
   .item {
     .v-select {
-      margin-top: 10px;
       margin-right: 30px;
       width: 300px;
       min-width: 300px;
@@ -294,7 +292,7 @@ export default {
     // flex-grow: 1;
     // border: 1px solid #c9c9c9;
     // border-radius: 5px;
-    padding: 10px 5px;
+    padding: 12px 5px;
     background-color: #fff;
     gap: 5px;
     .title {
@@ -308,7 +306,11 @@ export default {
   }
 }
 .accept_btn {
+  margin: 12px;
   text-align: right;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
   .btn1 {
     color: white;
     width: 130px;
@@ -325,7 +327,6 @@ export default {
   }
   .btn2 {
     color: white;
-    margin-left: 10px;
     width: 130px;
     background-color: #6c757d;
     background: linear-gradient(

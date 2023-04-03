@@ -67,6 +67,8 @@ export default {
 .app_modal {
   pointer-events: all;
   width: 100%;
+  overflow: scroll;
+  height: 100%;
   position: absolute;
   top: 0;
   left: 0;

@@ -17,8 +17,8 @@
     <template v-if="showList">
       <div class="backdrop" @click="closeList()" />
       <transition-group name="list">
-        <template v-if="list.length">
-          <ul class="list">
+        <template v-if="list.length && titleIsVisible">
+          <ul class="list top" ref="listRef">
             <li
               class="item"
               :class="{ selected: item.value === selected?.value }"
@@ -55,7 +55,8 @@
 
 <script>
 import { ref } from "@vue/reactivity";
-import { onMounted, onUnmounted, watch } from "@vue/runtime-core";
+import { nextTick, watch } from "@vue/runtime-core";
+import { useElementVisibility } from "@vueuse/core";
 export default {
   props: {
     list: Array,
@@ -66,6 +67,11 @@ export default {
     input_uderline: { type: Boolean, required: false, default: () => false }, // стиль интпута
     SelectedInTitle: { type: Boolean, required: false, default: () => false }, // показывать выбранный итем в тайтле
     special: { type: Boolean, required: false, default: () => false }, // специальный режим
+    allow_add_with_zero_count: {
+      type: Boolean,
+      required: false,
+      default: () => false,
+    },
   },
   emits: ["changeInputValue", "focusIn", "select"],
   setup(props, context) {
@@ -112,34 +118,57 @@ export default {
         props.list,
         () => {
           props.list.map((item) => {
-            if (item.specialValue > item.count) item.specialValue = item.count;
+            if (
+              item.specialValue > item.count &&
+              !props.allow_add_with_zero_count
+            )
+              item.specialValue = item.count;
             if (item.specialValue < 0) item.specialValue = 0;
           });
         },
         { deep: true }
       );
 
-    onMounted(() => {
-      window.addEventListener("scroll", calcListPosition);
-    });
-
-    onUnmounted(() => window.removeEventListener("scroll", calcListPosition));
-
     watch(showList, () => {
-      calcListPosition();
+      nextTick(() => calcListPosition());
     });
 
     const calcListPosition = () => {
       const rect = title.value?.getBoundingClientRect();
+      optionsBottom.value =
+        window.innerHeight - rect.bottom + rect.height + 6 + "px";
       optionsWidth.value = rect.width - 2 + "px";
       optionsX.value = rect.x + "px";
-      optionsY.value = rect.bottom + "px";
+      optionsY.value = rect.bottom + 6 + "px";
+      if (listRef.value)
+        if (window.innerHeight - rect.bottom + rect.height + 2 < 400) {
+          if (listRef.value.classList.contains("top")) {
+            listRef.value.classList.add("bottom");
+            listRef.value.classList.remove("top");
+          }
+        } else {
+          if (listRef.value.classList.contains("bottom")) {
+            listRef.value.classList.remove("bottom");
+            listRef.value.classList.add("top");
+          }
+        }
     };
 
     const title = ref(null);
     const optionsWidth = ref(null);
     const optionsX = ref(null);
     const optionsY = ref(null);
+    const optionsBottom = ref(null);
+    const listRef = ref(null);
+    const titleIsVisible = useElementVisibility(title);
+
+    watch(titleIsVisible, () => {
+      if (titleIsVisible.value) {
+        window.addEventListener("scroll", calcListPosition);
+      } else {
+        window.removeEventListener("scroll", calcListPosition);
+      }
+    });
 
     return {
       inputValue,
@@ -152,6 +181,9 @@ export default {
       optionsWidth,
       optionsX,
       optionsY,
+      optionsBottom,
+      listRef,
+      titleIsVisible,
     };
   },
 };
@@ -179,10 +211,15 @@ export default {
   .list::-webkit-scrollbar {
     display: none;
   }
+  .top {
+    top: v-bind(optionsY);
+  }
+  .bottom {
+    bottom: v-bind(optionsBottom);
+  }
   .list {
     min-width: v-bind(optionsWidth);
     left: v-bind(optionsX);
-    top: v-bind(optionsY);
     z-index: 50;
     list-style-type: none;
     position: fixed;
