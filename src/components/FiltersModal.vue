@@ -215,12 +215,7 @@ export default {
 .btn2 {
   color: #fff;
   // background-color: #0d6efd;
-  background: linear-gradient(
-    135deg,
-    hsl(216, 98%, 57%),
-    hsl(216, 98%, 52%),
-    hsl(216, 98%, 42%)
-  );
+  background: #3e6a97;
   transition: background 0.15s ease-out;
 }
 .btn2:hover {

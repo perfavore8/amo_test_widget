@@ -33,6 +33,7 @@
                 v-model="item.specialValue"
                 style="width: 100px; min-width: 1%"
                 placeholder="введите кол-во"
+                @click.stop=""
               />
               {{ item.name }}
             </li>

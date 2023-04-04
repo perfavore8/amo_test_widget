@@ -379,27 +379,15 @@ export default {
   .btn1 {
     color: white;
     width: 130px;
-    background: linear-gradient(
-      135deg,
-      hsl(208, 7%, 52%),
-      hsl(208, 7%, 46%),
-      hsl(206, 7%, 40%)
-    );
+    background: #c25833;
   }
   .btn1:hover {
-    background-color: #5f676d;
-    box-shadow: 0 0 5px 2px rgb(95 103 109 / 25%);
+    box-shadow: 0 0 5px 2px rgb(194 88 51 / 25%);
   }
   .btn2 {
     color: white;
     width: 130px;
-    background-color: #6c757d;
-    background: linear-gradient(
-      135deg,
-      hsl(208, 7%, 52%),
-      hsl(208, 7%, 46%),
-      hsl(206, 7%, 40%)
-    );
+    background: #3e6a97;
   }
   .btn2:hover {
     box-shadow: 0 0 5px 2px rgb(2 86 212 / 25%);
