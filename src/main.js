@@ -18,10 +18,6 @@ const WidgetVueProductsSearch = {
       app.mount(el);
     });
 
-    self.apiRequest("fields", { category_id: 0 }, (res) => {
-      console.debug(res);
-    });
-
     return true;
   },
 

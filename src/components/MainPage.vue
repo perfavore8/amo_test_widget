@@ -238,7 +238,6 @@
 import { mapGetters } from "vuex";
 import AppInputSelect from "@/components/AppInputSelect.vue";
 import FiltersModal from "@/components/FiltersModal.vue";
-import { amoWidjetSelf } from "@/main";
 export default {
   components: {
     AppInputSelect,
@@ -293,7 +292,6 @@ export default {
   async mounted() {
     // this.get_data_categories();
     // this.feel_available_data();
-    console.debug("amoWidjetSelf", amoWidjetSelf);
     await Promise.all([
       this.getCategories(0),
       this.$store.dispatch("getAllFields", { account_id: 30214471 }),
@@ -395,8 +393,6 @@ export default {
         category_id: id,
         with_parents: 1,
       });
-      // console.debug(this.fields);
-      // console.debug(this.sortedFields);
     },
     handleDeleteItem(row, idx) {
       const obj = {

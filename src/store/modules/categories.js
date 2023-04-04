@@ -36,7 +36,6 @@ export default {
             delete params.account_id;
             delete params.user;
             amoWidjetSelf?.apiRequest("categories", params, async (res) => {
-              console.debug(res);
               response = await res;
               context.commit("updateCategories", response);
               resolve(response);
@@ -52,14 +51,12 @@ export default {
       if (process.env.NODE_ENV === "development") {
         const res = await fetch(url + preparation_params(params), {});
         response = await res.json();
-        console.debug(response);
         context.commit("update_fields_properties", response);
       } else {
         delete params.account_id;
         delete params.user;
         amoWidjetSelf?.apiRequest("category/list", params, (res) => {
           response = res;
-          console.debug(response);
           context.commit("update_fields_properties", response);
         });
       }
@@ -71,14 +68,12 @@ export default {
       if (process.env.NODE_ENV === "development") {
         const res = await fetch(url + preparation_params(params), {});
         response = await res.json();
-        console.debug(response);
         context.commit("update_fields_properties2", response);
       } else {
         delete params.account_id;
         delete params.user;
         amoWidjetSelf?.apiRequest("categories/list", params, (res) => {
           response = res;
-          console.debug(response);
           context.commit("update_fields_properties2", response);
         });
       }

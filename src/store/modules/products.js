@@ -48,7 +48,6 @@ export default {
           if (process.env.NODE_ENV === "development") {
             const res = await fetch(url + preparation_params(params), {});
             response = await res.json();
-            console.debug("123", response);
             context.commit("updateProductsAutocomplete", response);
             resolve(response);
           } else {
@@ -58,7 +57,6 @@ export default {
               "get-products-autocomplete",
               params,
               async (res) => {
-                console.debug(res, Array.isArray(res));
                 response = await res;
                 context.commit("updateProductsAutocomplete", response);
                 resolve(response);
@@ -83,7 +81,6 @@ export default {
             delete params.account_id;
             delete params.user;
             amoWidjetSelf?.apiRequest("products", params, async (res) => {
-              console.debug(res);
               context.commit("updateProducts", res);
               response = await res;
               resolve(response);
@@ -107,7 +104,6 @@ export default {
               body: JSON.stringify(params),
             });
             response = await res.json();
-            console.debug(response);
             context.commit("updateAllProducts", response.data);
             context.commit("update_meta", {
               links: response.links,
@@ -124,7 +120,6 @@ export default {
               params,
               async (res) => {
                 response = await res;
-                console.debug(response);
                 context.commit("updateAllProducts", response.data);
                 context.commit("update_meta", {
                   links: response.links,
@@ -144,7 +139,6 @@ export default {
       if (process.env.NODE_ENV === "development") {
         const res = await fetch(url + preparation_params(params));
         response = await res.json();
-        console.debug(response);
       } else {
         delete params.account_id;
         delete params.user;
@@ -161,7 +155,6 @@ export default {
       if (process.env.NODE_ENV === "development") {
         const res = await fetch(url + preparation_params(params));
         response = await res.json();
-        console.debug(response);
       } else {
         delete params.account_id;
         delete params.user;

@@ -73,11 +73,14 @@ export default {
       context.emit("close");
     };
     const accept = () => {
+      savedAllWhsList.value = [];
       close();
     };
 
     const savedAllWhsList = ref([]);
-    const changeSavedAllWhsList = (list) => (savedAllWhsList.value = [...list]);
+    const changeSavedAllWhsList = (list) => {
+      savedAllWhsList.value = [...list];
+    };
 
     const mainGridRef = ref(null);
 

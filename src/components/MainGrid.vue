@@ -254,6 +254,8 @@ export default {
         });
       });
       this.savedAllWhsList = [];
+      this.allWhsList = [];
+      this.$emit("changeSavedAllWhsList", this.savedAllWhsList);
       this.$emit("accept");
     },
     fillAllWhsList() {

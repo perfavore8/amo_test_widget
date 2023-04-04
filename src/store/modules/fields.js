@@ -32,7 +32,6 @@ export default {
   actions: {
     async getFields(context, params) {
       const url = BaseURL + "fields";
-      console.debug(process.env.NODE_ENV, amoWidjetSelf);
       let response = [];
       if (process.env.NODE_ENV === "development") {
         const res = await fetch(url + preparation_params(params), {});
@@ -42,7 +41,6 @@ export default {
         delete params.account_id;
         delete params.user;
         amoWidjetSelf?.apiRequest("fields", params, (res) => {
-          console.debug(res);
           response = res;
           context.commit("updateFields", response);
         });
@@ -55,13 +53,11 @@ export default {
       if (process.env.NODE_ENV === "development") {
         const res = await fetch(url + preparation_params(params), {});
         response = await res.json();
-        console.debug(response);
         context.commit("update_all_fields", response);
       } else {
         delete params.account_id;
         delete params.user;
         amoWidjetSelf?.apiRequest("fields/all", params, (res) => {
-          console.debug(res);
           response = res;
           context.commit("update_all_fields", response);
         });
@@ -74,13 +70,11 @@ export default {
       if (process.env.NODE_ENV === "development") {
         const res = await fetch(url + preparation_params(params), {});
         response = await res.json();
-        console.debug(response);
         context.commit("updateTableConfig", response?.table);
       } else {
         delete params.account_id;
         delete params.user;
         amoWidjetSelf?.apiRequest("products/filtered/config", params, (res) => {
-          console.debug(res);
           response = res;
           context.commit("updateTableConfig", response?.table);
         });
