@@ -174,6 +174,16 @@
                         />
                       </div>
                       <div v-else>
+                        {{
+                          allWhsList?.[idx]?.filter(
+                            (val) =>
+                              val?.name
+                                ?.toLowerCase()
+                                ?.includes(inputValues[idx]?.toLowerCase()) &&
+                              (product.allow_add_with_zero_count ||
+                                !(val.count < 1))
+                          )
+                        }}
                         <AppInputSelect
                           style="min-width: 70px"
                           v-if="allWhsList?.[idx]?.length"
@@ -323,7 +333,6 @@ export default {
       });
 
       this.allWhsList = res;
-      console.debug(this.allWhsList);
     },
     fillInputValues() {
       this.products.forEach(() => this.inputValues.push(""));

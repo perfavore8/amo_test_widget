@@ -14,6 +14,7 @@
       "
       ref="title"
     />
+    {{ titleIsVisible }}
     <template v-if="showList">
       <div class="backdrop" @click="closeList()" />
       <transition-group name="list">
