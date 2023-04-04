@@ -845,6 +845,9 @@ export default {
             .title {
               @include font(600, 20px);
             }
+            .rows {
+              width: 100%;
+            }
           }
         }
         .card_footer {
