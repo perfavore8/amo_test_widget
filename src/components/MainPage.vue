@@ -93,75 +93,80 @@
                     </div>
                     <div class="rows">
                       <template v-for="field in sortedFields" :key="field">
-                        <template v-if="field.type === 11">
-                          <div class="row">
-                            <div class="name font-medium">
-                              {{ field.name }} :
-                            </div>
-                            <div class="value">
-                              {{
-                                product?.fields[field.code]?.cost
-                                  ? product?.fields[field.code]?.cost
-                                  : "" +
-                                    " " +
-                                    product?.fields[field.code]?.currency
-                                  ? product?.fields[field.code]?.currency
-                                  : ""
-                              }}
-                            </div>
-                          </div>
-                          <template v-if="product?.fields[field.code]?.is_nds">
-                            <div class="row ml-1">
-                              <div class="name">НДС :</div>
-                              <div class="value">
-                                {{ product?.fields[field.code]?.nds }}
+                        <template v-if="field.lead_config.visible > 0">
+                          <template v-if="field.type === 11">
+                            <div class="row">
+                              <div class="name font-medium">
+                                {{ field.name }} :
                               </div>
-                            </div>
-                            <div class="row ml-1">
-                              <div class="name">НДС включен в цену :</div>
                               <div class="value">
                                 {{
-                                  product?.fields[field.code]
-                                    ?.is_price_include_nds
-                                    ? "Да"
-                                    : "Нет"
+                                  product?.fields[field.code]?.cost
+                                    ? product?.fields[field.code]?.cost
+                                    : "" +
+                                      " " +
+                                      product?.fields[field.code]?.currency
+                                    ? product?.fields[field.code]?.currency
+                                    : ""
                                 }}
                               </div>
                             </div>
+                            <template
+                              v-if="product?.fields[field.code]?.is_nds"
+                            >
+                              <div class="row ml-1">
+                                <div class="name">НДС :</div>
+                                <div class="value">
+                                  {{ product?.fields[field.code]?.nds }}
+                                </div>
+                              </div>
+                              <div class="row ml-1">
+                                <div class="name">НДС включен в цену :</div>
+                                <div class="value">
+                                  {{
+                                    product?.fields[field.code]
+                                      ?.is_price_include_nds
+                                      ? "Да"
+                                      : "Нет"
+                                  }}
+                                </div>
+                              </div>
+                            </template>
                           </template>
-                        </template>
-                        <template v-else-if="field.type === 13">
-                          <div class="row">
-                            <div class="name font-medium">
-                              {{ field.name }} :
+                          <template v-else-if="field.type === 13">
+                            <div class="row">
+                              <div class="name font-medium">
+                                {{ field.name }} :
+                              </div>
+                              <div class="value"></div>
                             </div>
-                            <div class="value"></div>
-                          </div>
-                          <div class="row ml-1">
-                            <div class="name">На складе :</div>
+                            <div class="row ml-1">
+                              <div class="name">На складе :</div>
+                              <div class="value">
+                                {{ product?.fields[field.code]?.count }}
+                              </div>
+                            </div>
+                            <div class="row ml-1">
+                              <div class="name">В резерве :</div>
+                              <div class="value">
+                                {{ product?.fields[field.code]?.reserve }}
+                              </div>
+                            </div>
+                          </template>
+                          <template v-else-if="field.code === 'name'" />
+                          <div class="row" v-else>
+                            <div class="name">{{ field.name }} :</div>
                             <div class="value">
-                              {{ product?.fields[field.code]?.count }}
-                            </div>
-                          </div>
-                          <div class="row ml-1">
-                            <div class="name">В резерве :</div>
-                            <div class="value">
-                              {{ product?.fields[field.code]?.reserve }}
+                              {{ product?.fields[field.code] }}
                             </div>
                           </div>
                         </template>
-                        <template v-else-if="field.code === 'name'" />
-                        <div class="row" v-else>
-                          <div class="name">{{ field.name }} :</div>
-                          <div class="value">
-                            {{ product?.fields[field.code] }}
-                          </div>
-                        </div>
                       </template>
                     </div>
                     <div class="card_footer">
                       <div v-if="product.is_service">
                         <input
+                          v-if="allWhsList?.[idx]?.length"
                           type="number"
                           class="sls_input"
                           style="min-width: 70px"
@@ -171,9 +176,9 @@
                       <div v-else>
                         <AppInputSelect
                           style="min-width: 70px"
-                          v-if="allWhsList[idx].length"
+                          v-if="allWhsList?.[idx]?.length"
                           :list="
-                            allWhsList[idx]?.filter(
+                            allWhsList?.[idx]?.filter(
                               (val) =>
                                 val?.name
                                   ?.toLowerCase()
@@ -189,7 +194,7 @@
                             product.allow_add_with_zero_count
                           "
                           :placeholder="
-                            allWhsList[idx]?.reduce(
+                            allWhsList?.[idx]?.reduce(
                               (sum, wh) => (sum += wh?.specialValue),
                               0
                             )

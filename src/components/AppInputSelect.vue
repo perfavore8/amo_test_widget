@@ -209,7 +209,7 @@ export default {
     z-index: 49;
   }
   .list::-webkit-scrollbar {
-    display: none;
+    // display: none;
   }
   .top {
     top: v-bind(optionsY);
@@ -231,10 +231,10 @@ export default {
     max-height: 400px;
     min-height: 40px;
     overflow-y: scroll;
-    scrollbar-width: 0;
+    // scrollbar-width: 0;
     overflow: auto;
     -ms-overflow-style: none;
-    scrollbar-width: none;
+    // scrollbar-width: none;
     margin: 0;
     padding: 0;
     background-color: white;

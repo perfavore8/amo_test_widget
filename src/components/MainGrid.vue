@@ -32,6 +32,7 @@
               <td class="item">
                 <div v-if="row.is_service">
                   <input
+                    v-if="allWhsList?.[idx]?.length"
                     type="number"
                     class="sls_input"
                     style="min-width: 70px"
@@ -42,12 +43,12 @@
                   <AppInputSelect
                     style="min-width: 70px"
                     :list="
-                      allWhsList[idx]?.filter(
+                      allWhsList?.[idx]?.filter(
                         (val) =>
                           val?.name
                             ?.toLowerCase()
                             ?.includes(inputValues[idx]?.toLowerCase()) &&
-                          (row.allow_add_with_zero_count || !(val.count < 1))
+                          (row.allow_add_with_zero_count || !(val?.count < 1))
                       )
                     "
                     :special="true"
@@ -55,7 +56,7 @@
                     :countLettersReq="0"
                     :allow_add_with_zero_count="row.allow_add_with_zero_count"
                     :placeholder="
-                      allWhsList[idx]?.reduce(
+                      allWhsLis?.t[idx]?.reduce(
                         (sum, wh) => (sum += wh?.specialValue),
                         0
                       )
@@ -228,7 +229,7 @@ export default {
   methods: {
     accept() {
       this.allWhsList.forEach((whs) => {
-        whs.forEach((wh) => {
+        whs?.forEach((wh) => {
           if (wh.specialValue) {
             const params = {
               account_id: 30214471,
@@ -260,6 +261,9 @@ export default {
 
       this.allWhsList = res;
     },
+    // saveAllWhsList() {
+    //   this.allWhsList.filter(())
+    // },
     fillInputValues() {
       this.products.forEach(() => this.inputValues.push(""));
     },
