@@ -57,7 +57,7 @@
                     :allow_add_with_zero_count="row.allow_add_with_zero_count"
                     :placeholder="
                       allWhsList?.[idx]?.reduce(
-                        (sum, wh) => (sum += wh?.specialValue),
+                        (sum, wh) => (sum += Number(wh?.specialValue)),
                         0
                       )
                     "
@@ -130,7 +130,6 @@
         @changePage="changePage"
         @changeCount="changeCount"
       />
-      <button class="sls_btn btn2" @click="accept()">Добавить к сделке</button>
     </div>
   </div>
 </template>
@@ -285,7 +284,10 @@ export default {
     },
     saveAllWhsList() {
       const list = this.allWhsList.filter((whs) => {
-        const total = whs.reduce((sum, wh) => (sum += wh.specialValue), 0);
+        const total = whs.reduce(
+          (sum, wh) => (sum += Number(wh.specialValue)),
+          0
+        );
         return total;
       });
       if (this.savedAllWhsList.length) {
@@ -305,6 +307,10 @@ export default {
           ...this.savedAllWhsList,
           ...Object.values(newItems),
         ];
+
+        this.savedAllWhsList = this.savedAllWhsList.filter((whs) =>
+          whs.reduce((sum, wh) => (sum += Number(wh.specialValue)), 0)
+        );
       } else {
         this.savedAllWhsList = [...this.savedAllWhsList, ...list];
       }
@@ -455,20 +461,6 @@ export default {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  .btn2 {
-    color: #fff;
-    // background-color: #0d6efd;
-    background: linear-gradient(
-      135deg,
-      hsl(216, 98%, 57%),
-      hsl(216, 98%, 52%),
-      hsl(216, 98%, 42%)
-    );
-    transition: background 0.15s ease-out;
-  }
-  .btn2:hover {
-    box-shadow: 0 0 5px 2px rgb(2 86 212 / 25%);
-  }
 }
 .blur {
   filter: blur(5px);

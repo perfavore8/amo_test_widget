@@ -6,7 +6,7 @@
         <div class="saved">
           <div v-for="(whs, idx) in savedAllWhsList" :key="whs" class="item">
             {{ whs[0].product_name }} :
-            {{ whs.reduce((sum, wh) => (sum += wh.specialValue), 0) }}
+            {{ whs.reduce((sum, wh) => (sum += Number(wh.specialValue)), 0) }}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -21,6 +21,13 @@
             </svg>
           </div>
         </div>
+        <button
+          class="sls_btn btn2"
+          @click="accepMainGridRef()"
+          v-if="savedAllWhsList.length"
+        >
+          Добавить к сделке
+        </button>
         <button class="exit" @click="close()">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -79,9 +86,14 @@ export default {
         nextTick(() => mainGridRef.value?.deleteSavedAllWhsList(idx));
     };
 
+    const accepMainGridRef = () => {
+      if (mainGridRef.value) nextTick(() => mainGridRef.value?.accept());
+    };
+
     return {
       close,
       accept,
+      accepMainGridRef,
       savedAllWhsList,
       changeSavedAllWhsList,
       mainGridRef,
@@ -198,5 +210,19 @@ export default {
       }
     }
   }
+}
+.btn2 {
+  color: #fff;
+  // background-color: #0d6efd;
+  background: linear-gradient(
+    135deg,
+    hsl(216, 98%, 57%),
+    hsl(216, 98%, 52%),
+    hsl(216, 98%, 42%)
+  );
+  transition: background 0.15s ease-out;
+}
+.btn2:hover {
+  box-shadow: 0 0 5px 2px rgb(2 86 212 / 25%);
 }
 </style>

@@ -195,7 +195,7 @@
                           "
                           :placeholder="
                             allWhsList?.[idx]?.reduce(
-                              (sum, wh) => (sum += wh?.specialValue),
+                              (sum, wh) => (sum += Number(wh?.specialValue)),
                               0
                             )
                           "
