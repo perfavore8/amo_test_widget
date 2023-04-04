@@ -51,6 +51,21 @@
             :idx="idx"
             @change_filter_value="change_filter_value"
           />
+          <button class="sls_remove" @click="remove_filter(filter)">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="28"
+              height="28"
+              viewBox="0 0 15 15"
+            >
+              <path
+                fill="currentColor"
+                fill-rule="evenodd"
+                d="M11.782 4.032a.575.575 0 1 0-.813-.814L7.5 6.687L4.032 3.218a.575.575 0 0 0-.814.814L6.687 7.5l-3.469 3.468a.575.575 0 0 0 .814.814L7.5 8.313l3.469 3.469a.575.575 0 0 0 .813-.814L8.313 7.5l3.469-3.468Z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
         </div>
       </template>
     </div>
@@ -136,8 +151,20 @@ export default {
     add_filter(option) {
       option.selected = true;
     },
+    remove_filter(option) {
+      option.selected = false;
+    },
     searchTitle(code) {
-      return this.fields.find((field) => field.code === code)?.name;
+      let res = "";
+      const [first, second] = code.split(".");
+      console.log(code, first, second);
+      res = this.fields.find((field) => field.code === first)?.name;
+      if (second === "count") res = res + ": на складе";
+      if (second === "reserve") res = res + ": в резерве";
+      if (second === "is_nds") res = res + ": с НДС";
+      if (second === "is_price_include_nds") res = res + ": НДС включен в цену";
+      if (second === "nds") res = res + ": НДС %";
+      return res;
     },
     clearFilters() {
       this.feelFilters();
@@ -147,7 +174,7 @@ export default {
       this.isConfirmFilters = true;
       const filter = {};
       this.filtersValue
-        .filter((val) => val.value != null && val.value !== "")
+        .filter((val) => val.value != null && val.value !== "" && val.selected)
         .forEach((val) => {
           if (val.type == 1 || val.type == 2)
             filter[val.code] = {
@@ -288,6 +315,7 @@ export default {
     display: flex;
     flex-direction: row;
     align-items: center;
+    position: relative;
     // justify-content: space-between;
     // flex-grow: 1;
     // border: 1px solid #c9c9c9;
@@ -297,6 +325,31 @@ export default {
     gap: 5px;
     .title {
       @include font(500, 16px, 19px);
+    }
+    .sls_remove {
+      background: transparent;
+      border-radius: 0 5px 5px 0;
+      height: 16px;
+      width: 16px;
+      z-index: 5;
+      /* margin: 0 auto; */
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease-out;
+      /* margin: 0; */
+      /* margin-right: -10px; */
+      padding: 0;
+      position: absolute;
+      right: 6px;
+      top: 18px;
+      > svg {
+        filter: invert(48%) sepia(2%) saturate(15%) hue-rotate(4deg)
+          brightness(94%) contrast(88%);
+      }
     }
   }
   .item:deep(.filter) {

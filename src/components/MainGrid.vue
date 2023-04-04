@@ -53,9 +53,10 @@
                     :special="true"
                     :requestDelay="0"
                     :countLettersReq="0"
+                    :allow_add_with_zero_count="row.allow_add_with_zero_count"
                     :placeholder="
-                      allWhsList[idx].reduce(
-                        (sum, wh) => (sum += wh.specialValue),
+                      allWhsList[idx]?.reduce(
+                        (sum, wh) => (sum += wh?.specialValue),
                         0
                       )
                     "

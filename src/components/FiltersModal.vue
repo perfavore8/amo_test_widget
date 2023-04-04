@@ -25,11 +25,6 @@
           <main-grid @accept="accept" class="main_grid" />
         </keep-alive>
       </div>
-      <div class="footer">
-        <div class="btns">
-          <button class="sls_btn btn1" @click="close()">Назад</button>
-        </div>
-      </div>
     </div>
   </div>
 </template>
