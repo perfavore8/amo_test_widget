@@ -157,7 +157,6 @@ export default {
     searchTitle(code) {
       let res = "";
       const [first, second] = code.split(".");
-      console.log(code, first, second);
       res = this.fields.find((field) => field.code === first)?.name;
       if (second === "count") res = res + ": на складе";
       if (second === "reserve") res = res + ": в резерве";
@@ -321,6 +320,7 @@ export default {
     // border: 1px solid #c9c9c9;
     // border-radius: 5px;
     padding: 12px 5px;
+    height: 52px;
     background-color: #fff;
     gap: 5px;
     .title {
@@ -345,7 +345,7 @@ export default {
       padding: 0;
       position: absolute;
       right: 6px;
-      top: 18px;
+      top: 19px;
       > svg {
         filter: invert(48%) sepia(2%) saturate(15%) hue-rotate(4deg)
           brightness(94%) contrast(88%);

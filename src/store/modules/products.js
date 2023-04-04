@@ -70,57 +70,73 @@ export default {
       return myPromise;
     },
     async getProducts(context, params) {
-      const url = BaseURL + "products";
-      let response = [];
-      if (process.env.NODE_ENV === "development") {
-        const res = await fetch(url + preparation_params(params), {});
-        response = await res.json();
-        context.commit("updateProducts", response);
-      } else {
-        delete params.account_id;
-        delete params.user;
-        amoWidjetSelf?.apiRequest("products", params, (res) => {
-          console.debug(res);
-          context.commit("updateProducts", res);
-          response = res;
-        });
-      }
-      return response;
+      const myPromise = await new Promise((resolve) => {
+        const url = BaseURL + "products";
+        let response = [];
+        (async () => {
+          if (process.env.NODE_ENV === "development") {
+            const res = await fetch(url + preparation_params(params), {});
+            response = await res.json();
+            context.commit("updateProducts", response);
+            resolve(response);
+          } else {
+            delete params.account_id;
+            delete params.user;
+            amoWidjetSelf?.apiRequest("products", params, async (res) => {
+              console.debug(res);
+              context.commit("updateProducts", res);
+              response = await res;
+              resolve(response);
+            });
+          }
+        })();
+      });
+      return myPromise;
     },
     async getAllProducts(context, params) {
-      const url = BaseURL + "products/filtered";
-      let response = [];
-      if (process.env.NODE_ENV === "development") {
-        const res = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(params),
-        });
-        response = await res.json();
-        console.debug(response);
-        context.commit("updateAllProducts", response.data);
-        context.commit("update_meta", {
-          links: response.links,
-          meta: response.meta,
-        });
-      } else {
-        delete params.account_id;
-        delete params.user;
-        delete params.leadId;
-        params.leadId = amoWidjetSelf?.AMOCRM.data.current_card.id;
-        amoWidjetSelf?.apiRequest("products/filtered", params, (res) => {
-          response = res;
-          console.debug(response);
-          context.commit("updateAllProducts", response.data);
-          context.commit("update_meta", {
-            links: response.links,
-            meta: response.meta,
-          });
-        });
-      }
-      return response;
+      const myPromise = await new Promise((resolve) => {
+        const url = BaseURL + "products/filtered";
+        let response = [];
+        (async () => {
+          if (process.env.NODE_ENV === "development") {
+            const res = await fetch(url, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(params),
+            });
+            response = await res.json();
+            console.debug(response);
+            context.commit("updateAllProducts", response.data);
+            context.commit("update_meta", {
+              links: response.links,
+              meta: response.meta,
+            });
+            resolve(response);
+          } else {
+            delete params.account_id;
+            delete params.user;
+            delete params.leadId;
+            params.leadId = amoWidjetSelf?.AMOCRM.data.current_card.id;
+            amoWidjetSelf?.apiRequest(
+              "products/filtered",
+              params,
+              async (res) => {
+                response = await res;
+                console.debug(response);
+                context.commit("updateAllProducts", response.data);
+                context.commit("update_meta", {
+                  links: response.links,
+                  meta: response.meta,
+                });
+                resolve(response);
+              }
+            );
+          }
+        })();
+      });
+      return myPromise;
     },
     async addProduct(context, params) {
       const url = BaseURL + "add-product";

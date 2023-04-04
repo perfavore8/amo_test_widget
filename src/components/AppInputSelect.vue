@@ -32,6 +32,7 @@
                 class="sls_input"
                 v-model="item.specialValue"
                 style="width: 100px; min-width: 1%"
+                placeholder="введите кол-во"
               />
               {{ item.name }}
             </li>

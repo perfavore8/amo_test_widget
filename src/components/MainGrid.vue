@@ -56,7 +56,7 @@
                     :countLettersReq="0"
                     :allow_add_with_zero_count="row.allow_add_with_zero_count"
                     :placeholder="
-                      allWhsLis?.t[idx]?.reduce(
+                      allWhsList?.[idx]?.reduce(
                         (sum, wh) => (sum += wh?.specialValue),
                         0
                       )
@@ -152,6 +152,7 @@ export default {
       isLoading: false,
       inputValues: [],
       allWhsList: [],
+      savedAllWhsList: [],
       showSpinner: false,
     };
   },
@@ -201,6 +202,11 @@ export default {
       );
       return obj;
     },
+    savedAllWhsListIds() {
+      const res = [];
+      this.savedAllWhsList.forEach((whs) => res.push(whs[0].product_id));
+      return res;
+    },
   },
   async activated() {
     this.isLoading = true;
@@ -225,6 +231,12 @@ export default {
       },
       deep: true,
     },
+    allWhsList: {
+      handler: function () {
+        this.saveAllWhsList();
+      },
+      deep: true,
+    },
   },
   methods: {
     accept() {
@@ -245,25 +257,63 @@ export default {
       this.$emit("accept");
     },
     fillAllWhsList() {
+      this.saveAllWhsList();
+
       const res = [];
 
       this.products.forEach((product) => {
-        const copyArr = product.whs?.map((a) => ({ ...a }));
-        copyArr.map((wh) => {
-          wh.name = wh.name + "   |   " + wh.count;
-          wh.value = wh.code;
-          wh.specialValue = 0;
-          wh.product_id = product.id;
-          wh.is_service = product.is_service;
-        });
-        res.push(copyArr);
+        const whs = this.savedAllWhsList.find(
+          (whs) => whs[0].product_id === product.id
+        );
+        if (whs) {
+          res.push(whs);
+        } else {
+          const copyArr = product.whs?.map((a) => ({ ...a }));
+          copyArr.map((wh) => {
+            wh.name = wh.name + "   |   " + wh.count;
+            wh.value = wh.code;
+            wh.specialValue = null;
+            wh.product_id = product.id;
+            wh.is_service = product.is_service;
+            wh.product_name = product.fields?.name;
+          });
+          res.push(copyArr);
+        }
       });
 
       this.allWhsList = res;
     },
-    // saveAllWhsList() {
-    //   this.allWhsList.filter(())
-    // },
+    saveAllWhsList() {
+      const list = this.allWhsList.filter((whs) => {
+        const total = whs.reduce((sum, wh) => (sum += wh.specialValue), 0);
+        return total;
+      });
+      if (this.savedAllWhsList.length) {
+        const newItems = {};
+        this.savedAllWhsList.forEach((saved_whs, idx) => {
+          const id = saved_whs[0].product_id;
+          list.forEach((whs) => {
+            if (whs[0].product_id === id) {
+              this.savedAllWhsList[idx] = whs;
+            } else {
+              if (!this.savedAllWhsListIds.includes(whs[0].product_id))
+                newItems[whs[0].product_id] = whs;
+            }
+          });
+        });
+        this.savedAllWhsList = [
+          ...this.savedAllWhsList,
+          ...Object.values(newItems),
+        ];
+      } else {
+        this.savedAllWhsList = [...this.savedAllWhsList, ...list];
+      }
+      this.$emit("changeSavedAllWhsList", this.savedAllWhsList);
+    },
+    deleteSavedAllWhsList(idx) {
+      this.savedAllWhsList.splice(idx, 1);
+      this.$emit("changeSavedAllWhsList", this.savedAllWhsList);
+    },
     fillInputValues() {
       this.products.forEach(() => this.inputValues.push(""));
     },

@@ -317,7 +317,7 @@ export default {
         copyArr.map((wh) => {
           wh.name = wh.name + "   |   " + wh.count;
           wh.value = wh.code;
-          wh.specialValue = 0;
+          wh.specialValue = null;
         });
         res.push(copyArr);
       });

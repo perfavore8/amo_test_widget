@@ -3,7 +3,24 @@
     <div class="sls_backdrop_with_filter" @click="close()" />
     <div class="container">
       <div class="header">
-        <label></label>
+        <div class="saved">
+          <div v-for="(whs, idx) in savedAllWhsList" :key="whs" class="item">
+            {{ whs[0].product_name }} :
+            {{ whs.reduce((sum, wh) => (sum += wh.specialValue), 0) }}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              @click="deleteSavedAllWhsList(idx)"
+            >
+              <path
+                fill="red"
+                d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12M8 9h8v10H8V9m7.5-5l-1-1h-5l-1 1H5v2h14V4h-3.5Z"
+              />
+            </svg>
+          </div>
+        </div>
         <button class="exit" @click="close()">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -22,7 +39,12 @@
       </div>
       <div class="content">
         <keep-alive>
-          <main-grid @accept="accept" class="main_grid" />
+          <main-grid
+            @changeSavedAllWhsList="changeSavedAllWhsList"
+            @accept="accept"
+            class="main_grid"
+            ref="mainGridRef"
+          />
         </keep-alive>
       </div>
     </div>
@@ -31,6 +53,7 @@
 
 <script>
 import MainGrid from "@/components/MainGrid.vue";
+import { nextTick, ref } from "vue";
 export default {
   components: {
     MainGrid,
@@ -46,9 +69,23 @@ export default {
       close();
     };
 
+    const savedAllWhsList = ref([]);
+    const changeSavedAllWhsList = (list) => (savedAllWhsList.value = [...list]);
+
+    const mainGridRef = ref(null);
+
+    const deleteSavedAllWhsList = (idx) => {
+      if (mainGridRef.value)
+        nextTick(() => mainGridRef.value?.deleteSavedAllWhsList(idx));
+    };
+
     return {
       close,
       accept,
+      savedAllWhsList,
+      changeSavedAllWhsList,
+      mainGridRef,
+      deleteSavedAllWhsList,
     };
   },
 };
@@ -89,6 +126,20 @@ export default {
       padding: 10px 50px;
       @include font(500, 20px);
       border-bottom: 2px solid #dee2e6;
+      .saved {
+        @include font(400, 16px);
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        .item {
+          display: flex;
+          align-items: center;
+          > svg {
+            cursor: pointer;
+          }
+        }
+      }
       .exit {
         background: transparent;
         border-radius: 0 5px 5px 0;

@@ -82,6 +82,7 @@ export default {
   border: 1px solid #ced4da;
   border-radius: 5px;
   .item {
+    white-space: nowrap;
     cursor: pointer;
     height: 32px;
     // width: 250px;
