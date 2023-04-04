@@ -174,16 +174,6 @@
                         />
                       </div>
                       <div v-else>
-                        {{
-                          allWhsList?.[idx]?.filter(
-                            (val) =>
-                              val?.name
-                                ?.toLowerCase()
-                                ?.includes(inputValues[idx]?.toLowerCase()) &&
-                              (product.allow_add_with_zero_count ||
-                                !(val.count < 1))
-                          )
-                        }}
                         <AppInputSelect
                           style="min-width: 70px"
                           v-if="allWhsList?.[idx]?.length"

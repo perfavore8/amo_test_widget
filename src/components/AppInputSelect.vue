@@ -14,11 +14,10 @@
       "
       ref="title"
     />
-    {{ titleIsVisible }}
     <template v-if="showList">
       <div class="backdrop" @click="closeList()" />
       <transition-group name="list">
-        <template v-if="list.length && titleIsVisible">
+        <template v-if="list.length">
           <ul class="list top" ref="listRef">
             <li
               class="item"
