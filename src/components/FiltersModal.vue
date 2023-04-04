@@ -183,6 +183,7 @@ export default {
       .main_grid {
         overflow-x: auto;
         max-width: 100%;
+        min-height: 500px;
       }
     }
     .footer {

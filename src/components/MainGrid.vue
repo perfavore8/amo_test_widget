@@ -239,7 +239,7 @@ export default {
   },
   methods: {
     accept() {
-      this.allWhsList.forEach((whs) => {
+      this.savedAllWhsList.forEach((whs) => {
         whs?.forEach((wh) => {
           if (wh.specialValue) {
             const params = {
@@ -253,6 +253,7 @@ export default {
           }
         });
       });
+      this.savedAllWhsList = [];
       this.$emit("accept");
     },
     fillAllWhsList() {

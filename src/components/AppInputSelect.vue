@@ -107,11 +107,9 @@ export default {
     const focusIn = () => context.emit("focusIn");
 
     const selectItem = (item) => {
-      if (!props.special) {
-        context.emit("select", item);
-        closeList();
-        inputValue.value = "";
-      }
+      context.emit("select", item);
+      closeList();
+      inputValue.value = "";
     };
 
     if (props.special)

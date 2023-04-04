@@ -153,6 +153,18 @@ export default {
     },
     remove_filter(option) {
       option.selected = false;
+      let value = null;
+      if (option.type == 5 || option.type == 6) {
+        value = [];
+      }
+      if (option.type == 9) {
+        value = 1;
+      }
+      if (option.type == 12) {
+        value = [];
+      }
+      option.value = value;
+      this.confirmFilters();
     },
     searchTitle(code) {
       let res = "";

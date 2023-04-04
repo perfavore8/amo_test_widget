@@ -323,6 +323,7 @@ export default {
       });
 
       this.allWhsList = res;
+      console.debug(this.allWhsList);
     },
     fillInputValues() {
       this.products.forEach(() => this.inputValues.push(""));
