@@ -95,7 +95,7 @@
                       <template v-for="field in sortedFields" :key="field">
                         <template v-if="field.type === 11">
                           <div class="row">
-                            <div class="name font-medium">
+                            <div class="name" style="font-weight: 500">
                               {{ field.name }} :
                             </div>
                             <div class="value">
@@ -111,13 +111,13 @@
                             </div>
                           </div>
                           <template v-if="product?.fields[field.code]?.is_nds">
-                            <div class="row ml-2">
+                            <div class="row" style="margin-left: 8px">
                               <div class="name">НДС :</div>
                               <div class="value">
                                 {{ product?.fields[field.code]?.nds }}
                               </div>
                             </div>
-                            <div class="row ml-2">
+                            <div class="row" style="margin-left: 8px">
                               <div class="name">НДС включен в цену :</div>
                               <div class="value">
                                 {{
@@ -132,12 +132,12 @@
                         </template>
                         <template v-else-if="field.type === 13">
                           <div class="row">
-                            <div class="name font-medium">
+                            <div class="name" style="font-weight: 500">
                               {{ field.name }}:
                             </div>
                             <div class="value"></div>
                           </div>
-                          <div class="row ml-2">
+                          <div class="row" style="margin-left: 8px">
                             <div class="name">Свободно для резерва:</div>
                             <div class="value">
                               {{
@@ -157,7 +157,7 @@
                         </template>
                         <template v-else-if="field.type === 12">
                           <div class="row">
-                            <div class="name font-medium">
+                            <div class="name" style="font-weight: 500">
                               {{ field.name }}:
                             </div>
                             <div class="value">
