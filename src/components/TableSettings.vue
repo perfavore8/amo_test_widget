@@ -59,7 +59,7 @@ export default {
   async mounted() {
     await this.$store.dispatch("getTableConfig", {
       account_id: 30214471,
-      code: "whs",
+      code: "widget",
     });
     const list = [];
     Object.entries(this.tableConfig).map((val) => {
@@ -73,19 +73,17 @@ export default {
     });
   },
   methods: {
-    save() {
+    async save() {
       this.list.map((val, idx) => (val.sort = idx + 1));
       const params = {
-        value: {
-          config: [],
-          code: "widget",
-        },
-        wh: "widget",
+        config: [],
+        code: "widget",
+        account_id: 30214471,
       };
       this.list.forEach((val) => {
-        if (val.visible) params.value.config.push(val.code);
+        if (val.visible) params.config.push(val.code);
       });
-      this.$store.dispatch("updateTableConfig", params);
+      await this.$store.dispatch("updateTableConfig", params);
       this.close();
     },
     close() {

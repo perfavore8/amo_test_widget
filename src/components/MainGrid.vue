@@ -230,7 +230,7 @@ export default {
     await Promise.all([
       this.$store.dispatch("getTableConfig", {
         account_id: 30214471,
-        code: "whs",
+        code: "widget",
       }),
       this.$store.dispatch("get_fields_properties2", {
         account_id: 30214471,
@@ -403,7 +403,7 @@ export default {
       await Promise.all([
         this.$store.dispatch("getTableConfig", {
           account_id: 30214471,
-          code: "whs",
+          code: "widget",
         }),
         this.$store.dispatch("getAllFields", { account_id: 30214471 }),
         this.get_products(this.productsParams),

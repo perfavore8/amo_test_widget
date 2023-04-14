@@ -91,15 +91,13 @@ export default {
         let response = [];
         (async () => {
           if (process.env.NODE_ENV === "development") {
-            const res = await fetch(url, {
+            await fetch(url, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify(params),
             });
-            response = await res.json();
-            context.commit("updateTableConfig", response?.table);
             resolve(response);
           } else {
             delete params.account_id;
