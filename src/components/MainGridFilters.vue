@@ -70,8 +70,8 @@
       </template>
     </div>
     <div class="accept_btn">
-      <button @click="clearFilters()" class="btn1 sls_btn">Очистить</button>
       <button @click="confirmFilters()" class="btn2 sls_btn">Применить</button>
+      <button @click="clearFilters()" class="btn1 sls_btn">Очистить</button>
     </div>
   </div>
 </template>
@@ -281,6 +281,17 @@ export default {
         };
         this.filtersValue.push(obj);
       });
+      const isAvailable = {
+        type: 9,
+        code: "isAvailable",
+        option: "=",
+        selector_options: [],
+        value: 1,
+        table_config: { filtered: 1, sort: 2, sortable: 1, visible: 1 },
+        selected: false,
+        name: "Есть в наличии",
+      };
+      this.filtersValue.push(isAvailable);
     },
     get_categories_options() {
       this.$store.state.categories.fields_properties2.forEach((val) => {
@@ -343,7 +354,7 @@ export default {
       border-radius: 0 5px 5px 0;
       height: 16px;
       width: 16px;
-      z-index: 5;
+      z-index: 4;
       /* margin: 0 auto; */
       cursor: pointer;
       border: none;

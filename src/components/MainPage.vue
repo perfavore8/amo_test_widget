@@ -93,78 +93,93 @@
                     </div>
                     <div class="rows">
                       <template v-for="field in sortedFields" :key="field">
-                        <template v-if="field.lead_config.visible > 0">
-                          <template v-if="field.type === 11">
-                            <div class="row">
-                              <div class="name font-medium">
-                                {{ field.name }} :
+                        <template v-if="field.type === 11">
+                          <div class="row">
+                            <div class="name font-medium">
+                              {{ field.name }} :
+                            </div>
+                            <div class="value">
+                              {{
+                                product?.fields[field.code]?.cost
+                                  ? product?.fields[field.code]?.cost
+                                  : "" +
+                                    " " +
+                                    product?.fields[field.code]?.currency
+                                  ? product?.fields[field.code]?.currency
+                                  : ""
+                              }}
+                            </div>
+                          </div>
+                          <template v-if="product?.fields[field.code]?.is_nds">
+                            <div class="row ml-2">
+                              <div class="name">НДС :</div>
+                              <div class="value">
+                                {{ product?.fields[field.code]?.nds }}
                               </div>
+                            </div>
+                            <div class="row ml-2">
+                              <div class="name">НДС включен в цену :</div>
                               <div class="value">
                                 {{
-                                  product?.fields[field.code]?.cost
-                                    ? product?.fields[field.code]?.cost
-                                    : "" +
-                                      " " +
-                                      product?.fields[field.code]?.currency
-                                    ? product?.fields[field.code]?.currency
-                                    : ""
+                                  product?.fields[field.code]
+                                    ?.is_price_include_nds
+                                    ? "Да"
+                                    : "Нет"
                                 }}
                               </div>
                             </div>
-                            <template
-                              v-if="product?.fields[field.code]?.is_nds"
-                            >
-                              <div class="row ml-1">
-                                <div class="name">НДС :</div>
-                                <div class="value">
-                                  {{ product?.fields[field.code]?.nds }}
-                                </div>
-                              </div>
-                              <div class="row ml-1">
-                                <div class="name">НДС включен в цену :</div>
-                                <div class="value">
-                                  {{
-                                    product?.fields[field.code]
-                                      ?.is_price_include_nds
-                                      ? "Да"
-                                      : "Нет"
-                                  }}
-                                </div>
-                              </div>
-                            </template>
                           </template>
-                          <template v-else-if="field.type === 13">
-                            <div class="row">
-                              <div class="name font-medium">
-                                {{ field.name }} :
-                              </div>
-                              <div class="value"></div>
+                        </template>
+                        <template v-else-if="field.type === 13">
+                          <div class="row">
+                            <div class="name font-medium">
+                              {{ field.name }}:
                             </div>
-                            <div class="row ml-1">
-                              <div class="name">На складе :</div>
-                              <div class="value">
-                                {{ product?.fields[field.code]?.count }}
-                              </div>
-                            </div>
-                            <div class="row ml-1">
-                              <div class="name">В резерве :</div>
-                              <div class="value">
-                                {{ product?.fields[field.code]?.reserve }}
-                              </div>
-                            </div>
-                          </template>
-                          <template v-else-if="field.code === 'name'" />
-                          <div class="row" v-else>
-                            <div class="name">{{ field.name }} :</div>
+                            <div class="value"></div>
+                          </div>
+                          <div class="row ml-2">
+                            <div class="name">Свободно для резерва:</div>
                             <div class="value">
-                              {{ product?.fields[field.code] }}
+                              {{
+                                Number(
+                                  product?.fields[field.code]?.count
+                                    ? product?.fields[field.code]?.count
+                                    : 0
+                                ) +
+                                Number(
+                                  product?.fields[field.code]?.reserve
+                                    ? product?.fields[field.code]?.reserve
+                                    : 0
+                                )
+                              }}
                             </div>
                           </div>
                         </template>
+                        <template v-else-if="field.type === 12">
+                          <div class="row">
+                            <div class="name font-medium">
+                              {{ field.name }}:
+                            </div>
+                            <div class="value">
+                              {{
+                                categoriesForCard?.[
+                                  product?.fields?.[field.code]
+                                ]
+                              }}
+                            </div>
+                          </div>
+                        </template>
+                        <template v-else-if="field.code === 'name'" />
+                        <div class="row" v-else>
+                          <div class="name">{{ field.name }}:</div>
+                          <div class="value">
+                            {{ product?.fields[field.code] }}
+                          </div>
+                        </div>
                       </template>
                     </div>
                     <div class="card_footer">
-                      <div v-if="product.is_service">
+                      <template v-if="product.is_service">
                         <input
                           v-if="allWhsList?.[idx]?.length"
                           type="number"
@@ -172,19 +187,19 @@
                           style="min-width: 70px"
                           v-model="allWhsList[idx][0].specialValue"
                         />
-                      </div>
-                      <div v-else>
+                      </template>
+                      <template v-else>
                         <AppInputSelect
-                          style="min-width: 70px"
+                          style="min-width: 70px; width: 100%"
                           v-if="allWhsList?.[idx]?.length"
                           :list="
                             allWhsList?.[idx]?.filter(
                               (val) =>
-                                val?.name
-                                  ?.toLowerCase()
-                                  ?.includes(inputValues[idx]?.toLowerCase()) &&
                                 (product.allow_add_with_zero_count ||
-                                  !(val.count < 1))
+                                  !(val.count < 1)) &&
+                                (selectedWirePerLead.value
+                                  ? val.code == selectedWirePerLead.value
+                                  : true)
                             )
                           "
                           :special="true"
@@ -193,6 +208,7 @@
                           :allow_add_with_zero_count="
                             product.allow_add_with_zero_count
                           "
+                          :one_wh_per_lead="product.one_wh_per_lead"
                           :placeholder="
                             allWhsList?.[idx]?.reduce(
                               (sum, wh) => (sum += Number(wh?.specialValue)),
@@ -203,10 +219,29 @@
                             (value) => (inputValues[idx] = value)
                           "
                         />
-                      </div>
+                      </template>
                       <div
                         class="sls_btn btn_del"
-                        @click="addToLead(product.id)"
+                        @click="
+                          () =>
+                            product.is_service
+                              ? allWhsList[idx][0].specialValue == 0
+                              : allWhsList?.[idx]?.reduce(
+                                  (sum, wh) =>
+                                    (sum += Number(wh?.specialValue)),
+                                  0
+                                ) == 0
+                              ? null
+                              : addToLead(product.id)
+                        "
+                        :class="{
+                          btn_del_disabled: product.is_service
+                            ? allWhsList[idx][0].specialValue == 0
+                            : allWhsList?.[idx]?.reduce(
+                                (sum, wh) => (sum += Number(wh?.specialValue)),
+                                0
+                              ) == 0,
+                        }"
                       >
                         Добавить к сделке
                       </div>
@@ -279,6 +314,30 @@ export default {
     categories() {
       return this.$store.state.categories.categories;
     },
+    categoriesForCard() {
+      const obj = {};
+      this.$store.state.categories.fields_properties2.forEach(
+        (val) => (obj[val.id] = val.name)
+      );
+      return obj;
+    },
+    selectedWirePerLead() {
+      return this.$store.state.products.selectedWirePerLead;
+    },
+    savedAllWhsList() {
+      const list = this.allWhsList.filter((whs) => {
+        const total = whs.reduce(
+          (sum, wh) => (sum += Number(wh.specialValue)),
+          0
+        );
+        return total;
+      });
+      if (list) {
+        return list;
+      } else {
+        return [];
+      }
+    },
     products() {
       return this.$store.state.products.products;
     },
@@ -295,6 +354,9 @@ export default {
     await Promise.all([
       this.getCategories(0),
       this.$store.dispatch("getAllFields", { account_id: 30214471 }),
+      this.$store.dispatch("get_fields_properties2", {
+        account_id: 30214471,
+      }),
     ]);
     this.selectCategories(this.categories[0]);
   },
@@ -303,7 +365,14 @@ export default {
       if (!this.show_cards) {
         this.selectedCategories = [];
         await this.getCategories(0);
+        this.selectCategories(this.categories[0]);
       }
+    },
+    allWhsList: {
+      handler: function () {
+        this.saveSelectedWirePerLead();
+      },
+      deep: true,
     },
   },
   methods: {
@@ -342,7 +411,7 @@ export default {
         });
       } else {
         this.allWhsList[idx].forEach((wh) => {
-          if (wh.specialValue !== 0) {
+          if (wh.specialValue) {
             this.$store.dispatch("addProduct2", {
               account_id: 30214471,
               productId: [id, wh.code].join("%%%"),
@@ -356,6 +425,8 @@ export default {
       this.search.value = q;
       const category_id = this.selectedCategories.at(-1)?.id;
       const params = { account_id: 30214471, q: q };
+      if (this.selectedWirePerLead.value)
+        params.selected_wh = this.selectedWirePerLead.value;
       if (category_id) params.category_id = category_id;
       await this.$store.dispatch("getProductsAutocomplete", params);
       const res = this.$store.state.products.productsAutocomplete;
@@ -462,6 +533,20 @@ export default {
     openModal() {
       this.show_filters = true;
       return false;
+    },
+    saveSelectedWirePerLead() {
+      let res = null;
+      if (this.products[0]?.one_wh_per_lead) {
+        res = this.savedAllWhsList[0]?.find((wh) => wh?.specialValue > 0)?.code;
+      }
+      if (
+        res != this.selectedWirePerLead.value ||
+        !this.selectedWirePerLead.sources.includes("MP")
+      )
+        this.$store.commit("updateSelectedWirePerLead", {
+          source: "MP",
+          value: res,
+        });
     },
   },
 };
@@ -768,6 +853,7 @@ export default {
               padding-top: 5px;
               .name {
                 max-width: 50%;
+                text-align: start;
               }
               .value {
                 text-align: end;
@@ -881,6 +967,13 @@ export default {
           .btn_del:hover {
             background-color: #929aa0;
             box-shadow: 0 0 5px 2px rgb(146 154 160 / 25%);
+          }
+          .btn_del_disabled {
+            cursor: default !important;
+          }
+          .btn_del_disabled:hover {
+            background-color: #a2a9ae !important;
+            box-shadow: none !important;
           }
         }
       }

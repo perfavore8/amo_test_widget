@@ -20,6 +20,7 @@ export default {
       sort: {},
       per_page: 20,
     },
+    selectedWirePerLead: { sources: [], value: null },
   },
   getters: {},
   mutations: {
@@ -37,6 +38,37 @@ export default {
     },
     updateProductsParams(state, params) {
       Object.assign(state.productsParams, params);
+    },
+    updateSelectedWirePerLead(state, params) {
+      const noOneSources = state.selectedWirePerLead.sources.length == 0;
+      const haveThisSource = state.selectedWirePerLead.sources.includes(
+        params.source
+      );
+      const onlyThisSource =
+        haveThisSource && state.selectedWirePerLead.sources.length == 1;
+      const sameValue = state.selectedWirePerLead.value === params.value;
+      if (noOneSources && params.value) {
+        state.selectedWirePerLead = {
+          sources: [params.source],
+          value: params.value,
+        };
+      } else if (onlyThisSource) {
+        if (!params.value) {
+          state.selectedWirePerLead = { sources: [], value: null };
+        } else {
+          state.selectedWirePerLead.value = params.value;
+        }
+      } else if (!haveThisSource && sameValue && params.value) {
+        state.selectedWirePerLead = {
+          sources: [...state.selectedWirePerLead.sources, params.source],
+          value: params.value,
+        };
+      } else if (haveThisSource && !params.value) {
+        state.selectedWirePerLead.sources =
+          state.selectedWirePerLead.sources.filter(
+            (source) => source != params.source
+          );
+      }
     },
   },
   actions: {

@@ -1,4 +1,9 @@
 <template>
+  <Teleport to="body">
+    <transition name="modal">
+      <TableSettings @close="closeTableSettings" v-if="showTableSettings" />
+    </transition>
+  </Teleport>
   <div class="wrapper" v-if="!isLoading">
     <MainGridFilters
       ref="filters"
@@ -45,16 +50,18 @@
                     :list="
                       allWhsList?.[idx]?.filter(
                         (val) =>
-                          val?.name
-                            ?.toLowerCase()
-                            ?.includes(inputValues[idx]?.toLowerCase()) &&
-                          (row.allow_add_with_zero_count || !(val?.count < 1))
+                          (row.allow_add_with_zero_count ||
+                            !(val?.count < 1)) &&
+                          (selectedWirePerLead.value
+                            ? val.code == selectedWirePerLead.value
+                            : true)
                       )
                     "
                     :special="true"
                     :requestDelay="0"
                     :countLettersReq="0"
                     :allow_add_with_zero_count="row.allow_add_with_zero_count"
+                    :one_wh_per_lead="row.one_wh_per_lead"
                     :placeholder="
                       allWhsList?.[idx]?.reduce(
                         (sum, wh) => (sum += Number(wh?.specialValue)),
@@ -135,13 +142,20 @@
 </template>
 
 <script>
-import MainGridFilters from "@/components/MainGridFilters.vue";
-import MainGridBar from "@/components/MainGridBar.vue";
-import GridBottom from "@/components/GridBottom.vue";
+import TableSettings from "../components/TableSettings.vue";
+import MainGridFilters from "../components/MainGridFilters.vue";
+import MainGridBar from "../components/MainGridBar.vue";
+import GridBottom from "../components/GridBottom.vue";
 import AppInputSelect from "./AppInputSelect.vue";
 export default {
   name: "MainGrid",
-  components: { MainGridFilters, MainGridBar, GridBottom, AppInputSelect },
+  components: {
+    TableSettings,
+    MainGridFilters,
+    MainGridBar,
+    GridBottom,
+    AppInputSelect,
+  },
   props: {},
   emits: {
     accept: null,
@@ -184,15 +198,19 @@ export default {
     tableConfig() {
       return this.$store.state.fields.tableConfig;
     },
+    selectedWirePerLead() {
+      return this.$store.state.products.selectedWirePerLead;
+    },
+    showTableSettings() {
+      return this.$store.state.fields.showTableSettings;
+    },
     sortedFields() {
       const list = Object.entries(this.tableConfig);
-      return list
-        .sort((a, b) => {
-          if (a[1].sort > b[1].sort) return 1;
-          if (a[1].sort == b[1].sort) return 0;
-          if (a[1].sort < b[1].sort) return -1;
-        })
-        .filter((val) => val[1].visible);
+      return list.sort((a, b) => {
+        if (a[1].sort > b[1].sort) return 1;
+        if (a[1].sort == b[1].sort) return 0;
+        if (a[1].sort < b[1].sort) return -1;
+      });
     },
     categories() {
       const obj = {};
@@ -233,6 +251,7 @@ export default {
     allWhsList: {
       handler: function () {
         this.saveAllWhsList();
+        this.saveSelectedWirePerLead();
       },
       deep: true,
     },
@@ -320,6 +339,12 @@ export default {
       this.$emit("changeSavedAllWhsList", this.savedAllWhsList);
     },
     deleteSavedAllWhsList(idx) {
+      const product_id = this.savedAllWhsList[idx]?.[0]?.product_id;
+      const item = this.allWhsList.find(
+        (whsList) => whsList[0]?.product_id === product_id
+      );
+      if (item) item.map((wh) => (wh.specialValue = null));
+
       this.savedAllWhsList.splice(idx, 1);
       this.$emit("changeSavedAllWhsList", this.savedAllWhsList);
     },
@@ -372,6 +397,32 @@ export default {
       };
       this.$store.commit("updateProductsParams", params);
       this.get_products(this.productsParams);
+    },
+    async closeTableSettings() {
+      this.isLoading = true;
+      await Promise.all([
+        this.$store.dispatch("getTableConfig", {
+          account_id: 30214471,
+          code: "whs",
+        }),
+        this.$store.dispatch("getAllFields", { account_id: 30214471 }),
+        this.get_products(this.productsParams),
+      ]);
+      this.isLoading = false;
+    },
+    saveSelectedWirePerLead() {
+      let res = null;
+      if (this.products[0]?.one_wh_per_lead) {
+        res = this.savedAllWhsList[0]?.find((wh) => wh?.specialValue > 0)?.code;
+      }
+      if (
+        res != this.selectedWirePerLead.value ||
+        !this.selectedWirePerLead.sources.includes("MG")
+      )
+        this.$store.commit("updateSelectedWirePerLead", {
+          source: "MG",
+          value: res,
+        });
     },
   },
 };

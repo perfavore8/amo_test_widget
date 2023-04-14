@@ -1,19 +1,44 @@
 <template>
   <div class="input-select">
-    <input
-      type="text"
-      class="sls_input"
-      :class="{
-        input_uderline: input_uderline,
-        black_text: SelectedInTitle && selected?.name,
-      }"
-      v-model="inputValue"
-      @click="openList()"
-      :placeholder="
-        SelectedInTitle && selected?.name ? selected?.name : placeholder
-      "
-      ref="title"
-    />
+    <template v-if="special">
+      <div
+        class="title"
+        :class="{ title_checked: showList }"
+        @click="openList()"
+        ref="title"
+      >
+        <p>{{ placeholder }}</p>
+        <div class="arrow" v-if="!disabled" :class="{ rotate_arrow: showList }">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill="#757575"
+              d="M8.12 9.29L12 13.17l3.88-3.88a.996.996 0 1 1 1.41 1.41l-4.59 4.59a.996.996 0 0 1-1.41 0L6.7 10.7a.996.996 0 0 1 0-1.41c.39-.38 1.03-.39 1.42 0z"
+            />
+          </svg>
+        </div>
+      </div>
+    </template>
+    <template v-else>
+      <input
+        type="text"
+        class="sls_input"
+        :class="{
+          input_uderline: input_uderline,
+          black_text: SelectedInTitle && selected?.name,
+        }"
+        v-model="inputValue"
+        @click="openList()"
+        :placeholder="
+          SelectedInTitle && selected?.name ? selected?.name : placeholder
+        "
+        ref="title"
+      />
+    </template>
     <template v-if="showList">
       <div class="backdrop" @click="closeList()" />
       <transition-group name="list">
@@ -70,6 +95,11 @@ export default {
     SelectedInTitle: { type: Boolean, required: false, default: () => false }, // показывать выбранный итем в тайтле
     special: { type: Boolean, required: false, default: () => false }, // специальный режим
     allow_add_with_zero_count: {
+      type: Boolean,
+      required: false,
+      default: () => false,
+    },
+    one_wh_per_lead: {
       type: Boolean,
       required: false,
       default: () => false,
@@ -136,12 +166,12 @@ export default {
     const calcListPosition = () => {
       const rect = title.value?.getBoundingClientRect();
       optionsBottom.value =
-        window.innerHeight - rect.bottom + rect.height + 6 + "px";
-      optionsWidth.value = rect.width - 2 + "px";
-      optionsX.value = rect.x + "px";
-      optionsY.value = rect.bottom + 6 + "px";
+        window.innerHeight - rect?.bottom + rect?.height + 6 + "px";
+      optionsWidth.value = rect?.width - 2 + "px";
+      optionsX.value = rect?.x + "px";
+      optionsY.value = rect?.bottom + 6 + "px";
       if (listRef.value)
-        if (window.innerHeight - rect.bottom + rect.height + 2 < 400) {
+        if (window.innerHeight - rect?.bottom + rect?.height + 2 < 400) {
           if (listRef.value.classList.contains("top")) {
             listRef.value.classList.add("bottom");
             listRef.value.classList.remove("top");
@@ -196,6 +226,34 @@ export default {
 }
 .input-select {
   position: relative;
+  .title {
+    height: 34px;
+    width: 100%;
+    gap: 8px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: white;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    transition: background-color 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+    cursor: pointer;
+  }
+  .title_checked {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 2px rgb(13 110 253 / 25%);
+  }
+  .arrow {
+    transition: transform 0.2s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .rotate_arrow {
+    transform: rotateX(180deg);
+  }
   .black_text::placeholder {
     color: black;
   }

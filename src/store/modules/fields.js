@@ -8,9 +8,13 @@ export default {
     fields: [],
     all_fields: [],
     tableConfig: {},
+    showTableSettings: false,
   },
   getters: {},
   mutations: {
+    toggleShowTableSettings(state, value) {
+      state.showTableSettings = value;
+    },
     updateFields(state, value) {
       state.fields = [...value];
     },
@@ -80,6 +84,41 @@ export default {
         });
       }
       return response;
+    },
+    async updateTableConfig(context, params) {
+      const myPromise = await new Promise((resolve) => {
+        const url = BaseURL + "products/filtered/config/update";
+        let response = [];
+        (async () => {
+          if (process.env.NODE_ENV === "development") {
+            const res = await fetch(url, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(params),
+            });
+            response = await res.json();
+            context.commit("updateTableConfig", response?.table);
+            resolve(response);
+          } else {
+            delete params.account_id;
+            delete params.user;
+            delete params.leadId;
+            params.leadId = amoWidjetSelf?.AMOCRM.data.current_card.id;
+            amoWidjetSelf?.apiRequest(
+              "products/filtered/config/update",
+              params,
+              async (res) => {
+                response = await res;
+                context.commit("updateTableConfig", response?.table);
+                resolve(response);
+              }
+            );
+          }
+        })();
+      });
+      return myPromise;
     },
   },
 };
