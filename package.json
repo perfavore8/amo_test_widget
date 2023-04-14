@@ -13,6 +13,7 @@
     "material-icons": "^1.13.1",
     "material-symbols": "^0.4.2",
     "vue": "^3.2.13",
+    "vue-draggable-next": "^2.1.1",
     "vuex": "^4.0.0"
   },
   "devDependencies": {
