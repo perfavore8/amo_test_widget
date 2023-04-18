@@ -69,11 +69,11 @@
                     :key="cat"
                     @click="selectCategories(cat)"
                   >
-                    <div class="row title">
+                    <div class="sls_row title">
                       <div class="name"></div>
                       <div class="value">{{ cat.name }}</div>
                     </div>
-                    <div class="row" />
+                    <div class="sls_row" />
                   </div>
                 </div>
               </div>
@@ -87,14 +87,14 @@
                     v-for="(product, idx) in products"
                     :key="product"
                   >
-                    <div class="row title">
+                    <div class="sls_row title">
                       <div class="name"></div>
                       <div class="value">{{ product?.fields?.name }}</div>
                     </div>
                     <div class="rows">
                       <template v-for="field in sortedFields" :key="field">
                         <template v-if="field.type === 11">
-                          <div class="row">
+                          <div class="sls_row">
                             <div class="name" style="font-weight: 500">
                               {{ field.name }} :
                             </div>
@@ -111,13 +111,13 @@
                             </div>
                           </div>
                           <template v-if="product?.fields[field.code]?.is_nds">
-                            <div class="row" style="margin-left: 8px">
+                            <div class="sls_row" style="margin-left: 8px">
                               <div class="name">НДС :</div>
                               <div class="value">
                                 {{ product?.fields[field.code]?.nds }}
                               </div>
                             </div>
-                            <div class="row" style="margin-left: 8px">
+                            <div class="sls_row" style="margin-left: 8px">
                               <div class="name">НДС включен в цену :</div>
                               <div class="value">
                                 {{
@@ -131,13 +131,13 @@
                           </template>
                         </template>
                         <template v-else-if="field.type === 13">
-                          <div class="row">
+                          <div class="sls_row">
                             <div class="name" style="font-weight: 500">
                               {{ field.name }}:
                             </div>
                             <div class="value"></div>
                           </div>
-                          <div class="row" style="margin-left: 8px">
+                          <div class="sls_row" style="margin-left: 8px">
                             <div class="name">Свободно для резерва:</div>
                             <div class="value">
                               {{
@@ -156,7 +156,7 @@
                           </div>
                         </template>
                         <template v-else-if="field.type === 12">
-                          <div class="row">
+                          <div class="sls_row">
                             <div class="name" style="font-weight: 500">
                               {{ field.name }}:
                             </div>
@@ -170,7 +170,7 @@
                           </div>
                         </template>
                         <template v-else-if="field.code === 'name'" />
-                        <div class="row" v-else>
+                        <div class="sls_row" v-else>
                           <div class="name">{{ field.name }}:</div>
                           <div class="value">
                             {{ product?.fields[field.code] }}
@@ -755,7 +755,7 @@ export default {
             );
           }
         }
-        > .row {
+        > .sls_row {
           width: calc(100% - 30px);
           margin-bottom: 5px;
           @include font(400, 15px);
@@ -767,7 +767,7 @@ export default {
             width: calc(100% - 2px);
             padding: 15px;
             border: 1px solid #f1f1f1;
-            .row {
+            .sls_row {
               display: flex;
               flex-direction: row;
               justify-content: space-between;
@@ -845,7 +845,7 @@ export default {
               max-height: 220px;
               overflow: auto;
             }
-            .row {
+            .sls_row {
               display: flex;
               flex-direction: row;
               justify-content: space-between;
@@ -887,7 +887,7 @@ export default {
             align-items: center;
             justify-content: space-between;
             padding: 12px 18px;
-            .row {
+            .sls_row {
               width: 100%;
               .value {
                 text-align: center;
@@ -896,7 +896,7 @@ export default {
             .title {
               padding: 0;
             }
-            .row:first-child {
+            .sls_row:first-child {
               border-bottom: none;
               height: 100%;
               .value {

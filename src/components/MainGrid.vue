@@ -33,7 +33,7 @@
         </div>
         <template v-else>
           <tbody v-if="products.length">
-            <tr class="row" v-for="(row, idx) in products" :key="row.id">
+            <tr v-for="(row, idx) in products" :key="row.id">
               <td class="item">
                 <div v-if="row.is_service">
                   <input
@@ -469,8 +469,6 @@ export default {
     position: relative;
     border-radius: 4px;
   }
-}
-.row {
 }
 .table {
   border-collapse: collapse;

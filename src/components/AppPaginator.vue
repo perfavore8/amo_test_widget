@@ -1,5 +1,5 @@
 <template>
-  <div class="grid">
+  <div class="sls_grid">
     <button
       @click="prev()"
       v-if="page.current != page.first && page.prev != null"
@@ -82,7 +82,7 @@ button {
 button:hover {
   background-color: rgb(226 232 240);
 }
-.grid {
+.sls_grid {
   display: grid;
   gap: 0.75rem;
   grid-template-areas: "a b c d e f g";

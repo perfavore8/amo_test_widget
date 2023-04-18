@@ -1,7 +1,7 @@
 <template>
   <edit-item v-if="show_edit_modal" :edit_data="edit_data" />
   <div class="wrapper" :class="{ blur: show_edit_modal }">
-    <div class="header">
+    <div class="sls_header">
       <transition-group name="mdl">
         <div class="filters" v-if="show_filter">
           <div
@@ -74,7 +74,7 @@
           <span> /</span>
         </div>
       </div>
-      <div class="grid">
+      <div class="sls_grid">
         <div
           class="card"
           v-for="select in categoryes[item]"
@@ -84,7 +84,7 @@
             sel_idx += 1;
           "
         >
-          <div class="row">
+          <div class="sls_row">
             <div class="name"></div>
             <div class="value">{{ select }}</div>
           </div>
@@ -92,7 +92,7 @@
       </div>
     </div>
     <div
-      class="grid"
+      class="sls_grid"
       v-if="!show_categoryes || path.length == selected_categoryes.length"
     >
       <label v-if="paginatedData.length == 0" class="text">
@@ -100,7 +100,7 @@
       </label>
       <div class="card" v-for="(row, i) in paginatedData" :key="row">
         <div
-          class="row"
+          class="sls_row"
           v-for="(item, idx) in row"
           :key="item"
           v-show="collval[idx]"
@@ -356,7 +356,7 @@ export default {
 * {
   box-sizing: border-box;
 }
-.header {
+.sls_header {
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -418,7 +418,7 @@ export default {
     opacity: 0.8;
   }
 }
-.grid {
+.sls_grid {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -433,7 +433,7 @@ export default {
     border: 1px solid #c9c9c9;
     border-radius: 5px;
     padding: 20px;
-    .row {
+    .sls_row {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
@@ -447,7 +447,7 @@ export default {
         display: none;
       }
     }
-    .row:first-child {
+    .sls_row:first-child {
       justify-content: center;
       @include font(500, 18px);
       padding: 20px 0;

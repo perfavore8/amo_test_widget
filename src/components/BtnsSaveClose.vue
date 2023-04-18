@@ -1,5 +1,5 @@
 <template>
-  <div class="btns">
+  <div class="sls_btns">
     <button class="sls_btn btn_grey" @click="close()" v-if="show_close">
       <slot name="close">Отмена</slot>
     </button>
@@ -54,7 +54,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/app.scss";
-.btns {
+.sls_btns {
   display: flex;
   flex-direction: row;
   gap: 10px;
