@@ -412,6 +412,7 @@ export default {
         account_id: 30214471,
         productId: id,
       });
+      if (this.show_cards) this.getProducts(this.selectedCategories.at(-1)?.id);
     },
     addToLead(id) {
       const product = this.products.find((product) => product.id === id);
@@ -433,6 +434,7 @@ export default {
           }
         });
       }
+      if (this.show_cards) this.getProducts(this.selectedCategories.at(-1)?.id);
     },
     async getProductsAutocomplete(q) {
       this.search.value = q;

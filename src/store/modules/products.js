@@ -171,20 +171,29 @@ export default {
     },
     async addProduct(context, params) {
       context.commit("updateDisableAddToDeal", true);
-      const url = BaseURL + "add-product";
-      let response = [];
-      if (process.env.NODE_ENV === "development") {
-        response = await fetch(url + preparation_params(params));
-      } else {
-        delete params.account_id;
-        delete params.user;
-        amoWidjetSelf?.addProduct(
-          amoWidjetSelf?.AMOCRM?.data?.current_card?.id,
-          params.productId
-        );
-      }
-      context.commit("updateDisableAddToDeal", false);
-      return response;
+      const myPromise = await new Promise((resolve) => {
+        const url = BaseURL + "add-product";
+        let response = [];
+        (async () => {
+          if (process.env.NODE_ENV === "development") {
+            response = await fetch(url + preparation_params(params));
+            context.commit("updateDisableAddToDeal", false);
+            resolve(response);
+          } else {
+            delete params.account_id;
+            delete params.user;
+            amoWidjetSelf?.addProduct(
+              amoWidjetSelf?.AMOCRM?.data?.current_card?.id,
+              params.productId,
+              () => {
+                context.commit("updateDisableAddToDeal", false);
+                resolve(response);
+              }
+            );
+          }
+        })();
+      });
+      return myPromise;
     },
     async addProduct2(context, params) {
       context.commit("updateDisableAddToDeal", true);
