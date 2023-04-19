@@ -83,182 +83,223 @@
                   </div>
                 </div>
               </div>
+              <AppPaginator
+                class="sls_paginator"
+                v-if="products.length != 0"
+                :page="page"
+                @changePage="changePage"
+              />
               <div class="products grid">
                 <label v-if="products.length == 0" class="text">
                   Ничего не найдено
                 </label>
                 <template v-else>
-                  <div
-                    class="card"
-                    v-for="(product, idx) in products"
-                    :key="product"
-                  >
-                    <div class="sls_row title">
-                      <div class="name"></div>
-                      <div class="value">{{ product?.fields?.name }}</div>
-                    </div>
-                    <div class="rows">
-                      <template v-for="field in sortedFields" :key="field">
-                        <template v-if="field.type === 11">
-                          <div class="sls_row">
-                            <div class="name" style="font-weight: 500">
-                              {{ field.name }} :
-                            </div>
-                            <div class="value">
-                              {{
-                                product?.fields[field.code]?.cost
-                                  ? product?.fields[field.code]?.cost
-                                  : "" +
-                                    " " +
-                                    product?.fields[field.code]?.currency
-                                  ? product?.fields[field.code]?.currency
-                                  : ""
-                              }}
-                            </div>
-                          </div>
-                          <template v-if="product?.fields[field.code]?.is_nds">
-                            <div class="sls_row" style="margin-left: 8px">
-                              <div class="name">НДС :</div>
-                              <div class="value">
-                                {{ product?.fields[field.code]?.nds }}
+                  <template v-if="!useSkeletonCard">
+                    <div
+                      class="card"
+                      v-for="(product, idx) in products"
+                      :key="product"
+                    >
+                      <div class="sls_row title">
+                        <div class="name"></div>
+                        <div class="value">{{ product?.fields?.name }}</div>
+                      </div>
+                      <div class="rows">
+                        <template v-for="field in sortedFields" :key="field">
+                          <template v-if="field.type === 11">
+                            <div class="sls_row">
+                              <div class="name" style="font-weight: 500">
+                                {{ field.name }} :
                               </div>
-                            </div>
-                            <div class="sls_row" style="margin-left: 8px">
-                              <div class="name">НДС включен в цену :</div>
                               <div class="value">
                                 {{
-                                  product?.fields[field.code]
-                                    ?.is_price_include_nds
-                                    ? "Да"
-                                    : "Нет"
+                                  product?.fields[field.code]?.cost
+                                    ? product?.fields[field.code]?.cost
+                                    : "" +
+                                      " " +
+                                      product?.fields[field.code]?.currency
+                                    ? product?.fields[field.code]?.currency
+                                    : ""
+                                }}
+                              </div>
+                            </div>
+                            <template
+                              v-if="product?.fields[field.code]?.is_nds"
+                            >
+                              <div class="sls_row" style="margin-left: 8px">
+                                <div class="name">НДС :</div>
+                                <div class="value">
+                                  {{ product?.fields[field.code]?.nds }}
+                                </div>
+                              </div>
+                              <div class="sls_row" style="margin-left: 8px">
+                                <div class="name">НДС включен в цену :</div>
+                                <div class="value">
+                                  {{
+                                    product?.fields[field.code]
+                                      ?.is_price_include_nds
+                                      ? "Да"
+                                      : "Нет"
+                                  }}
+                                </div>
+                              </div>
+                            </template>
+                          </template>
+                          <template v-else-if="field.type === 13">
+                            <div class="sls_row">
+                              <div class="name" style="font-weight: 500">
+                                {{ field.name }}:
+                              </div>
+                              <div class="value"></div>
+                            </div>
+                            <div class="sls_row" style="margin-left: 8px">
+                              <div class="name">Свободно для резерва:</div>
+                              <div class="value">
+                                {{
+                                  Number(
+                                    product?.fields[field.code]?.count
+                                      ? product?.fields[field.code]?.count
+                                      : 0
+                                  ) +
+                                  Number(
+                                    product?.fields[field.code]?.reserve
+                                      ? product?.fields[field.code]?.reserve
+                                      : 0
+                                  )
                                 }}
                               </div>
                             </div>
                           </template>
-                        </template>
-                        <template v-else-if="field.type === 13">
-                          <div class="sls_row">
-                            <div class="name" style="font-weight: 500">
-                              {{ field.name }}:
+                          <template v-else-if="field.type === 12">
+                            <div class="sls_row">
+                              <div class="name" style="font-weight: 500">
+                                {{ field.name }}:
+                              </div>
+                              <div class="value">
+                                {{
+                                  categoriesForCard?.[
+                                    product?.fields?.[field.code]
+                                  ]
+                                }}
+                              </div>
                             </div>
-                            <div class="value"></div>
-                          </div>
-                          <div class="sls_row" style="margin-left: 8px">
-                            <div class="name">Свободно для резерва:</div>
+                          </template>
+                          <template v-else-if="field.code === 'name'" />
+                          <div class="sls_row" v-else>
+                            <div class="name">{{ field.name }}:</div>
                             <div class="value">
-                              {{
-                                Number(
-                                  product?.fields[field.code]?.count
-                                    ? product?.fields[field.code]?.count
-                                    : 0
-                                ) +
-                                Number(
-                                  product?.fields[field.code]?.reserve
-                                    ? product?.fields[field.code]?.reserve
-                                    : 0
-                                )
-                              }}
+                              {{ product?.fields[field.code] }}
                             </div>
                           </div>
                         </template>
-                        <template v-else-if="field.type === 12">
-                          <div class="sls_row">
-                            <div class="name" style="font-weight: 500">
-                              {{ field.name }}:
-                            </div>
-                            <div class="value">
-                              {{
-                                categoriesForCard?.[
-                                  product?.fields?.[field.code]
-                                ]
-                              }}
-                            </div>
-                          </div>
+                      </div>
+                      <div class="card_footer">
+                        <template v-if="product.is_service">
+                          <input
+                            v-if="allWhsList?.[idx]?.length"
+                            type="number"
+                            class="sls_input"
+                            style="min-width: 70px"
+                            v-model="allWhsList[idx][0].specialValue"
+                          />
                         </template>
-                        <template v-else-if="field.code === 'name'" />
-                        <div class="sls_row" v-else>
-                          <div class="name">{{ field.name }}:</div>
-                          <div class="value">
-                            {{ product?.fields[field.code] }}
-                          </div>
-                        </div>
-                      </template>
-                    </div>
-                    <div class="card_footer">
-                      <template v-if="product.is_service">
-                        <input
-                          v-if="allWhsList?.[idx]?.length"
-                          type="number"
-                          class="sls_input"
-                          style="min-width: 70px"
-                          v-model="allWhsList[idx][0].specialValue"
-                        />
-                      </template>
-                      <template v-else>
-                        <AppInputSelect
-                          style="min-width: 70px; width: 100%"
-                          v-if="allWhsList?.[idx]?.length"
-                          :list="
-                            allWhsList?.[idx]?.filter(
-                              (val) =>
-                                (product.allow_add_with_zero_count ||
-                                  !(val.count < 1)) &&
-                                (selectedWirePerLead.value
-                                  ? val.code == selectedWirePerLead.value
-                                  : true)
-                            )
+                        <template v-else>
+                          <AppInputSelect
+                            style="min-width: 70px; width: 100%"
+                            v-if="allWhsList?.[idx]?.length"
+                            :list="
+                              allWhsList?.[idx]?.filter(
+                                (val) =>
+                                  (product.allow_add_with_zero_count ||
+                                    !(val.count < 1)) &&
+                                  (selectedWirePerLead.value
+                                    ? val.code == selectedWirePerLead.value
+                                    : true)
+                              )
+                            "
+                            :special="true"
+                            :requestDelay="0"
+                            :countLettersReq="0"
+                            :allow_add_with_zero_count="
+                              product.allow_add_with_zero_count
+                            "
+                            :one_wh_per_lead="product.one_wh_per_lead"
+                            :placeholder="
+                              allWhsList?.[idx]?.reduce(
+                                (sum, wh) => (sum += Number(wh?.specialValue)),
+                                0
+                              )
+                            "
+                            @changeInputValue="
+                              (value) => (inputValues[idx] = value)
+                            "
+                          />
+                        </template>
+                        <div
+                          class="sls_btn btn_green btn_del"
+                          @click="
+                            () =>
+                              disableAddToDeal
+                                ? null
+                                : product.is_service
+                                ? allWhsList[idx][0].specialValue == 0
+                                : allWhsList?.[idx]?.reduce(
+                                    (sum, wh) =>
+                                      (sum += Number(wh?.specialValue)),
+                                    0
+                                  ) == 0
+                                ? null
+                                : addToLead(product.id)
                           "
-                          :special="true"
-                          :requestDelay="0"
-                          :countLettersReq="0"
-                          :allow_add_with_zero_count="
-                            product.allow_add_with_zero_count
-                          "
-                          :one_wh_per_lead="product.one_wh_per_lead"
-                          :placeholder="
-                            allWhsList?.[idx]?.reduce(
-                              (sum, wh) => (sum += Number(wh?.specialValue)),
-                              0
-                            )
-                          "
-                          @changeInputValue="
-                            (value) => (inputValues[idx] = value)
-                          "
-                        />
-                      </template>
-                      <div
-                        class="sls_btn btn_green btn_del"
-                        @click="
-                          () =>
-                            disableAddToDeal
-                              ? null
+                          :class="{
+                            btn_del_disabled: disableAddToDeal
+                              ? true
                               : product.is_service
-                              ? allWhsList[idx][0].specialValue == 0
+                              ? !allWhsList[idx][0].specialValue
                               : allWhsList?.[idx]?.reduce(
                                   (sum, wh) =>
                                     (sum += Number(wh?.specialValue)),
                                   0
-                                ) == 0
-                              ? null
-                              : addToLead(product.id)
-                        "
-                        :class="{
-                          btn_del_disabled: disableAddToDeal
-                            ? true
-                            : product.is_service
-                            ? !allWhsList[idx][0].specialValue
-                            : allWhsList?.[idx]?.reduce(
-                                (sum, wh) => (sum += Number(wh?.specialValue)),
-                                0
-                              ) == 0,
-                        }"
-                      >
-                        Добавить к сделке
+                                ) == 0,
+                          }"
+                        >
+                          Добавить к сделке
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </template>
+                  <template v-else>
+                    <div
+                      class="card skeleton"
+                      v-for="product in products"
+                      :key="product"
+                    >
+                      <div class="sls_row title">
+                        <div class="name"></div>
+                        <div class="value"></div>
+                      </div>
+                      <div class="rows">
+                        <template v-for="i in 7" :key="i">
+                          <div class="sls_row">
+                            <div class="name"></div>
+                            <div class="value"></div>
+                          </div>
+                        </template>
+                      </div>
+                      <div class="card_footer">
+                        <div class="sls_btn btn_green btn_del"></div>
+                        <div class="sls_btn btn_green btn_del"></div>
+                      </div>
+                    </div>
+                  </template>
                 </template>
               </div>
+              <AppPaginator
+                class="sls_paginator"
+                v-if="products.length != 0"
+                :page="page"
+                @changePage="changePage"
+              />
             </template>
           </div>
         </transition>
@@ -282,11 +323,13 @@
 <script>
 import { mapGetters } from "vuex";
 import AppInputSelect from "@/components/AppInputSelect.vue";
+import AppPaginator from "./AppPaginator.vue";
 import FiltersModal from "@/components/FiltersModal.vue";
 export default {
   components: {
     AppInputSelect,
     FiltersModal,
+    AppPaginator,
   },
   data() {
     return {
@@ -300,6 +343,7 @@ export default {
       inputValues: [],
       allWhsList: [],
       showSpinner: false,
+      useSkeletonCard: false,
       // fields: [
       //   { name: "Количество", change: true },
       //   { name: "Поставщик", change: true },
@@ -323,6 +367,22 @@ export default {
     ...mapGetters(["data", "params"]),
     categories() {
       return this.$store.state.categories.categories;
+    },
+    page() {
+      const obj = {
+        first: this.getPageFromLink(this.meta?.links?.first),
+        prev: this.getPageFromLink(this.meta?.links?.prev),
+        current: this.meta?.meta?.current_page,
+        next: this.getPageFromLink(this.meta?.links?.next),
+        last: this.getPageFromLink(this.meta?.links?.last),
+      };
+      return obj;
+    },
+    meta() {
+      return this.$store.state.products.meta2;
+    },
+    productsParams() {
+      return this.$store.state.products.productsParams2;
     },
     categoriesForCard() {
       const obj = {};
@@ -360,6 +420,10 @@ export default {
     sortedFields() {
       return this.fields?.filter((field) => field.lead_config?.visible > 0);
     },
+    productsLength() {
+      console.log(this.products.length);
+      return this.products.length;
+    },
   },
   async mounted() {
     // this.get_data_categories();
@@ -389,6 +453,24 @@ export default {
     },
   },
   methods: {
+    getPageFromLink(link) {
+      if (link) {
+        return link.split("?page=")[1];
+      } else {
+        return null;
+      }
+    },
+    changePage(newPage) {
+      this.$store.commit("updateProductsParams2", { page: newPage });
+      this.getProducts(this.selectedCategories.at(-1)?.id);
+      window.scrollTo(0, 0);
+    },
+    dropPage() {
+      this.changePage(1);
+    },
+    isLastProductPerPage() {
+      this.meta.from === this.meta.to;
+    },
     fillAllWhsList() {
       const res = [];
 
@@ -412,7 +494,7 @@ export default {
         account_id: 30214471,
         productId: id,
       });
-      if (this.show_cards) this.getProducts(this.selectedCategories.at(-1)?.id);
+      this.updateProductsList();
     },
     async addToLead(id) {
       const product = this.products.find((product) => product.id === id);
@@ -434,7 +516,16 @@ export default {
           }
         });
       }
-      if (this.show_cards) this.getProducts(this.selectedCategories.at(-1)?.id);
+      this.updateProductsList();
+    },
+    updateProductsList() {
+      if (this.show_cards) {
+        if (this.isLastProductPerPage && this.page.current > 1) {
+          this.changePage(this.page.current - 1);
+        } else {
+          this.getProducts(this.selectedCategories.at(-1)?.id);
+        }
+      }
     },
     async getProductsAutocomplete(q) {
       this.search.value = q;
@@ -455,6 +546,7 @@ export default {
         this.selectedCategories.splice(idx, 9999);
       }
       this.selectedCategories.push(cat);
+      this.dropPage();
       await Promise.all([this.getCategories(cat.id), this.getProducts(cat.id)]);
       if (this.selectedCategories.length === 1) await this.getFields(cat.id);
       this.showSpinner = false;
@@ -466,12 +558,15 @@ export default {
       });
     },
     async getProducts(id) {
-      await this.$store.dispatch("getProducts", {
+      this.useSkeletonCard = true;
+      await this.$store.dispatch("getProducts2", {
         account_id: 30214471,
         category_id: id,
+        ...this.productsParams,
       });
       this.fillInputValues();
       this.fillAllWhsList();
+      this.useSkeletonCard = false;
     },
     async getFields(id) {
       await this.$store.dispatch("getFields", {
@@ -484,7 +579,7 @@ export default {
       this.show_filters = false;
     },
     accept_filters() {
-      if (this.show_cards) this.getProducts(this.selectedCategories.at(-1)?.id);
+      this.updateProductsList();
     },
     feel_available_data() {
       this.data.forEach((val, idx) => {
@@ -843,6 +938,117 @@ export default {
             margin: 0 auto;
             @include font(500, 18px);
           }
+          .skeleton {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+            @keyframes pulse {
+              0%,
+              100% {
+                opacity: 1;
+              }
+              50% {
+                opacity: 0.3;
+              }
+            }
+            .title {
+              height: 30px;
+              background-color: #d1d5db;
+              border-radius: 9999px;
+              margin-bottom: 10px;
+              width: 70% !important;
+              padding: 0 !important;
+            }
+            .rows {
+              min-height: 220px;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+            }
+            .sls_row {
+              display: flex;
+              flex-direction: row;
+              justify-content: space-between;
+              border-bottom: 1px dotted #c9c9c9;
+              padding-top: 5px;
+              padding-bottom: 5px;
+              .name,
+              .value {
+                text-align: start;
+                height: 14px;
+                background-color: #d1d5db;
+                border-radius: 9999px;
+              }
+              .value {
+                text-align: end;
+              }
+            }
+            .sls_row:nth-child(1) {
+              .name {
+                width: 23%;
+              }
+              .value {
+                width: 15%;
+              }
+            }
+            .sls_row:nth-child(2) {
+              .name {
+                width: 48%;
+              }
+              .value {
+                width: 6%;
+              }
+            }
+            .sls_row:nth-child(3) {
+              .name {
+                width: 29%;
+              }
+              .value {
+                width: 41%;
+              }
+            }
+            .sls_row:nth-child(4) {
+              .name {
+                width: 4%;
+              }
+              .value {
+                width: 50%;
+              }
+            }
+            .sls_row:nth-child(5) {
+              .name {
+                width: 37%;
+              }
+              .value {
+                width: 9%;
+              }
+            }
+            .sls_row:nth-child(6) {
+              .name {
+                width: 42%;
+              }
+              .value {
+                width: 19%;
+              }
+            }
+            .sls_row:nth-child(7) {
+              .name {
+                width: 23%;
+              }
+              .value {
+                width: 39%;
+              }
+            }
+            .card_footer {
+              display: flex;
+              flex-direction: row;
+              gap: 16px;
+              .btn_del {
+                color: #d1d5db;
+                background-color: #d1d5db;
+                width: 100%;
+              }
+            }
+          }
           .card {
             min-width: 178px;
             width: calc(50% - 58px);
@@ -1009,5 +1215,9 @@ export default {
   width: 100%;
   display: flex;
   justify-content: center;
+}
+.sls_paginator {
+  width: fit-content;
+  margin: 20px auto;
 }
 </style>

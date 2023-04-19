@@ -14,11 +14,19 @@ export default {
       links: {},
       meta: {},
     },
+    meta2: {
+      links: {},
+      meta: {},
+    },
     productsParams: {
       page: 1,
       filter: {},
       sort: {},
       per_page: 20,
+    },
+    productsParams2: {
+      page: 1,
+      per_page: 12,
     },
     selectedWirePerLead: { sources: [], value: null },
     disableAddToDeal: false,
@@ -40,8 +48,14 @@ export default {
     update_meta(state, value) {
       state.meta = { ...value };
     },
+    update_meta2(state, value) {
+      state.meta2 = { ...value };
+    },
     updateProductsParams(state, params) {
       Object.assign(state.productsParams, params);
+    },
+    updateProductsParams2(state, params) {
+      Object.assign(state.productsParams2, params);
     },
     updateSelectedWirePerLead(state, params) {
       const noOneSources = state.selectedWirePerLead.sources.length == 0;
@@ -118,6 +132,37 @@ export default {
             delete params.user;
             amoWidjetSelf?.apiRequest("products", params, async (res) => {
               context.commit("updateProducts", res);
+              response = await res;
+              resolve(response);
+            });
+          }
+        })();
+      });
+      return myPromise;
+    },
+    async getProducts2(context, params) {
+      const myPromise = await new Promise((resolve) => {
+        const url = BaseURL + "products-v2";
+        let response = [];
+        (async () => {
+          if (process.env.NODE_ENV === "development") {
+            const res = await fetch(url + preparation_params(params), {});
+            response = await res.json();
+            context.commit("updateProducts", response.data);
+            context.commit("update_meta2", {
+              meta: response.meta,
+              links: response.links,
+            });
+            resolve(response);
+          } else {
+            delete params.account_id;
+            delete params.user;
+            amoWidjetSelf?.apiRequest("products-v2", params, async (res) => {
+              context.commit("updateProducts", response.data);
+              context.commit("update_meta2", {
+                meta: response.meta,
+                links: response.links,
+              });
               response = await res;
               resolve(response);
             });
