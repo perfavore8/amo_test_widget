@@ -221,7 +221,7 @@
                         />
                       </template>
                       <div
-                        class="sls_btn btn_del"
+                        class="sls_btn btn_green btn_del"
                         @click="
                           () =>
                             product.is_service
@@ -962,14 +962,15 @@ export default {
           .btn_del {
             white-space: nowrap;
             color: #fff;
-            background-color: #a2a9ae;
+            background: #4e964d;
           }
           .btn_del:hover {
-            background-color: #929aa0;
-            box-shadow: 0 0 5px 2px rgb(146 154 160 / 25%);
+            background: rgb(105, 177, 104);
+            box-shadow: 0 0 5px 2px rgb(105 177 104 / 25%);
           }
           .btn_del_disabled {
             cursor: default !important;
+            background-color: #a2a9ae !important;
           }
           .btn_del_disabled:hover {
             background-color: #a2a9ae !important;
