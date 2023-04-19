@@ -170,11 +170,11 @@ export default {
       return myPromise;
     },
     async addProduct(context, params) {
+      context.commit("updateDisableAddToDeal", true);
       const url = BaseURL + "add-product";
       let response = [];
       if (process.env.NODE_ENV === "development") {
-        const res = await fetch(url + preparation_params(params));
-        response = await res.json();
+        response = await fetch(url + preparation_params(params));
       } else {
         delete params.account_id;
         delete params.user;
@@ -183,24 +183,35 @@ export default {
           params.productId
         );
       }
+      context.commit("updateDisableAddToDeal", false);
       return response;
     },
     async addProduct2(context, params) {
-      const url = BaseURL + "add-product-v2";
-      let response = [];
-      if (process.env.NODE_ENV === "development") {
-        const res = await fetch(url + preparation_params(params));
-        response = await res.json();
-      } else {
-        delete params.account_id;
-        delete params.user;
-        amoWidjetSelf?.addProduct2(
-          amoWidjetSelf?.AMOCRM?.data?.current_card?.id,
-          params.productId,
-          params.count
-        );
-      }
-      return response;
+      context.commit("updateDisableAddToDeal", true);
+      const myPromise = await new Promise((resolve) => {
+        const url = BaseURL + "add-product-v2";
+        let response = [];
+        (async () => {
+          if (process.env.NODE_ENV === "development") {
+            response = await fetch(url + preparation_params(params));
+            context.commit("updateDisableAddToDeal", false);
+            resolve(response);
+          } else {
+            delete params.account_id;
+            delete params.user;
+            amoWidjetSelf?.addProduct2(
+              amoWidjetSelf?.AMOCRM?.data?.current_card?.id,
+              params.productId,
+              params.count,
+              () => {
+                context.commit("updateDisableAddToDeal", false);
+                resolve(response);
+              }
+            );
+          }
+        })();
+      });
+      return myPromise;
     },
     async addProduct3(context, params) {
       context.commit("updateDisableAddToDeal", true);
