@@ -1,8 +1,8 @@
 <template>
   <div class="app_modal">
     <div class="sls_backdrop_with_filter" @click="close()" />
-    <div class="container">
-      <div class="header">
+    <div class="sls_container">
+      <div class="sls_header">
         <div class="saved">
           <div v-for="(whs, idx) in savedAllWhsList" :key="whs" class="item">
             {{ whs[0].product_name }} :
@@ -44,7 +44,7 @@
           </svg>
         </button>
       </div>
-      <div class="content">
+      <div class="sls_content">
         <keep-alive>
           <main-grid
             @changeSavedAllWhsList="changeSavedAllWhsList"
@@ -120,7 +120,7 @@ export default {
   top: 0;
   left: 0;
   background: transparent;
-  .container {
+  .sls_container {
     position: relative;
     z-index: 200;
     width: 90%;
@@ -134,7 +134,7 @@ export default {
     text-align: left;
     display: flex;
     flex-direction: column;
-    .header {
+    .sls_header {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
@@ -175,7 +175,7 @@ export default {
         transform: rotate(90deg);
       }
     }
-    .content {
+    .sls_content {
       @include font(400, 16px);
       padding: 15px 50px;
       border-bottom: 2px solid #dee2e6;
@@ -189,7 +189,7 @@ export default {
         min-height: 500px;
       }
     }
-    .footer {
+    .sls_footer {
       display: flex;
       justify-content: end;
       padding: 15px 50px;
