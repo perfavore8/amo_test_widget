@@ -407,26 +407,26 @@ export default {
     fillInputValues() {
       this.products.forEach(() => this.inputValues.push(""));
     },
-    addToLeadAutocomplete(id) {
-      this.$store.dispatch("addProduct", {
+    async addToLeadAutocomplete(id) {
+      await this.$store.dispatch("addProduct", {
         account_id: 30214471,
         productId: id,
       });
       if (this.show_cards) this.getProducts(this.selectedCategories.at(-1)?.id);
     },
-    addToLead(id) {
+    async addToLead(id) {
       const product = this.products.find((product) => product.id === id);
       const idx = this.products.indexOf(product);
       if (product.is_service) {
-        this.$store.dispatch("addProduct2", {
+        await this.$store.dispatch("addProduct2", {
           account_id: 30214471,
           productId: id,
           count: this.allWhsList[idx][0].specialValue,
         });
       } else {
-        this.allWhsList[idx].forEach((wh) => {
+        this.allWhsList[idx].forEach(async (wh) => {
           if (wh.specialValue) {
-            this.$store.dispatch("addProduct2", {
+            await this.$store.dispatch("addProduct2", {
               account_id: 30214471,
               productId: [id, wh.code].join("%%%"),
               count: wh.specialValue,
