@@ -257,7 +257,8 @@ export default {
     },
   },
   methods: {
-    accept() {
+    async accept() {
+      const products = {};
       this.savedAllWhsList.forEach((whs) => {
         whs?.forEach((wh) => {
           if (wh.specialValue) {
@@ -268,9 +269,13 @@ export default {
                 : wh.product_id + "%%%" + wh.code,
               count: wh.specialValue,
             };
-            this.$store.dispatch("addProduct2", params);
+            products[params.productId] = params.count;
           }
         });
+      });
+      await this.$store.dispatch("addProduct3", {
+        products: products,
+        account_id: 30214471,
       });
       this.savedAllWhsList = [];
       this.allWhsList = [];

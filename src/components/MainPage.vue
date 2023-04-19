@@ -9,6 +9,7 @@
             :value="search.value"
             :placeholder="'Добавление (поиск на складе по названию или артикулу)...'"
             :countLettersReq="3"
+            :disabled="disableAddToDeal"
             @changeInputValue="getProductsAutocomplete"
             @select="(value) => addToLeadAutocomplete(value.id)"
           />
@@ -20,7 +21,12 @@
               id="grid"
             />
             <label for="grid"></label>
-            <div class="sls_btn" id="sls_btn_open_filter" @click="openModal()">
+            <div
+              class="sls_btn"
+              id="sls_btn_open_filter"
+              :class="{ sls_btn_disable: disableAddToDeal }"
+              @click="disableAddToDeal ? null : openModal()"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="28"
@@ -224,7 +230,9 @@
                         class="sls_btn btn_green btn_del"
                         @click="
                           () =>
-                            product.is_service
+                            disableAddToDeal
+                              ? null
+                              : product.is_service
                               ? allWhsList[idx][0].specialValue == 0
                               : allWhsList?.[idx]?.reduce(
                                   (sum, wh) =>
@@ -235,8 +243,10 @@
                               : addToLead(product.id)
                         "
                         :class="{
-                          btn_del_disabled: product.is_service
-                            ? allWhsList[idx][0].specialValue == 0
+                          btn_del_disabled: disableAddToDeal
+                            ? true
+                            : product.is_service
+                            ? !allWhsList[idx][0].specialValue
                             : allWhsList?.[idx]?.reduce(
                                 (sum, wh) => (sum += Number(wh?.specialValue)),
                                 0
@@ -262,7 +272,7 @@
         <filters-modal
           v-if="show_filters"
           @close="close_filters"
-          @update_changeValue="update_changeValue"
+          @accept="accept_filters"
         ></filters-modal>
       </keep-alive>
     </transition>
@@ -343,6 +353,9 @@ export default {
     },
     fields() {
       return this.$store.state.fields.fields;
+    },
+    disableAddToDeal() {
+      return this.$store.state.products.disableAddToDeal;
     },
     sortedFields() {
       return this.fields?.filter((field) => field.lead_config?.visible > 0);
@@ -465,45 +478,11 @@ export default {
         with_parents: 1,
       });
     },
-    handleDeleteItem(row, idx) {
-      const obj = {
-        name: this.short_value(row),
-        data: row,
-        value: Math.random(),
-      };
-      this.available_data.push(obj);
-      this.rows.splice(idx, 1);
-      this.countes.splice(idx, 1);
-    },
-    update_changeValue(arr, countes) {
-      arr.forEach((val, idx) => {
-        if (!this.rows.includes(val)) {
-          let array = [];
-          val.forEach((item) => array.push(item));
-          this.rows.push(array);
-          let count = null;
-          countes[idx] == undefined ? (count = 0) : (count = countes[idx]);
-          const obj = {
-            count: count,
-            company: "",
-          };
-          this.countes.push(obj);
-        }
-      });
-    },
     close_filters() {
       this.show_filters = false;
     },
-    select(value) {
-      this.available_data.forEach((val, idx) => {
-        if (val.data == value.data) this.available_data.splice(idx, 1);
-      });
-      this.rows.push(value.data);
-      const obj = {
-        count: 1,
-        company: "",
-      };
-      this.countes.push(obj);
+    accept_filters() {
+      if (this.show_cards) this.getProducts(this.selectedCategories.at(-1)?.id);
     },
     feel_available_data() {
       this.data.forEach((val, idx) => {
@@ -643,14 +622,44 @@ export default {
           }
           .sls_btn:hover,
           .sls_btn:focus-visible {
-            background-color: #40bf99;
+            background: #40bf99;
             box-shadow: 0 0 5px 2px rgb(64 191 153 / 25%);
           }
           .sls_btn:active {
-            background-color: #00cc8f;
+            background: #00cc8f;
             box-shadow: 0 0 5px 2px rgb(0 204 143 / 25%);
-            height: 31px;
-            width: 31px;
+            transform: scale(0.95);
+          }
+          .sls_btn_disable {
+            box-shadow: none !important;
+            cursor: default !important;
+            background: #a2a9ae !important;
+          }
+          .sls_btn_disable:hover,
+          .sls_btn::focus-visible {
+            background: #a2a9ae !important;
+            box-shadow: none !important;
+          }
+          .sls_btn_disable:active {
+            transform: none;
+            animation: shake 0.2s linear normal;
+            @keyframes shake {
+              0% {
+                transform: translateX(0);
+              }
+              25% {
+                transform: translateX(-3px);
+              }
+              50% {
+                transform: translateX(3px);
+              }
+              75% {
+                transform: translateX(-3px);
+              }
+              100% {
+                transform: translateX(0);
+              }
+            }
           }
         }
       }

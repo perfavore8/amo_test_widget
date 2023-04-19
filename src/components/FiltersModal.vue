@@ -74,6 +74,7 @@ export default {
     };
     const accept = () => {
       savedAllWhsList.value = [];
+      context.emit("accept");
       close();
     };
 

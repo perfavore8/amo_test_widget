@@ -21,9 +21,13 @@ export default {
       per_page: 20,
     },
     selectedWirePerLead: { sources: [], value: null },
+    disableAddToDeal: false,
   },
   getters: {},
   mutations: {
+    updateDisableAddToDeal(state, value) {
+      state.disableAddToDeal = value;
+    },
     updateProducts(state, value) {
       state.products = [...value];
     },
@@ -197,6 +201,38 @@ export default {
         );
       }
       return response;
+    },
+    async addProduct3(context, params) {
+      context.commit("updateDisableAddToDeal", true);
+      const myPromise = await new Promise((resolve) => {
+        const url = BaseURL + "add-product-v3";
+        let response = [];
+        (async () => {
+          if (process.env.NODE_ENV === "development") {
+            response = await fetch(url, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(params),
+            });
+            context.commit("updateDisableAddToDeal", false);
+            resolve(response);
+          } else {
+            delete params.account_id;
+            delete params.user;
+            amoWidjetSelf?.addProduct3(
+              amoWidjetSelf?.AMOCRM?.data?.current_card?.id,
+              params.products,
+              () => {
+                context.commit("updateDisableAddToDeal", false);
+                resolve(response);
+              }
+            );
+          }
+        })();
+      });
+      return myPromise;
     },
   },
 };

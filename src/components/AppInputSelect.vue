@@ -4,7 +4,7 @@
       <div
         class="title"
         :class="{ title_checked: showList }"
-        @click="openList()"
+        @click="disabled ? null : openList()"
         ref="title"
       >
         <p>{{ placeholder }}</p>
@@ -33,6 +33,7 @@
         }"
         v-model="inputValue"
         @click="openList()"
+        :disabled="disabled"
         :placeholder="
           SelectedInTitle && selected?.name ? selected?.name : placeholder
         "
@@ -94,6 +95,7 @@ export default {
     input_uderline: { type: Boolean, required: false, default: () => false }, // стиль интпута
     SelectedInTitle: { type: Boolean, required: false, default: () => false }, // показывать выбранный итем в тайтле
     special: { type: Boolean, required: false, default: () => false }, // специальный режим
+    disabled: { type: Boolean, required: false, default: () => false },
     allow_add_with_zero_count: {
       type: Boolean,
       required: false,
