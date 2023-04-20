@@ -158,12 +158,12 @@ export default {
             delete params.account_id;
             delete params.user;
             amoWidjetSelf?.apiRequest("products-v2", params, async (res) => {
+              response = await res;
               context.commit("updateProducts", response.data);
               context.commit("update_meta2", {
                 meta: response.meta,
                 links: response.links,
               });
-              response = await res;
               resolve(response);
             });
           }
