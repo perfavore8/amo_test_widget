@@ -1,48 +1,48 @@
 <template>
   <div class="sls_grid">
-    <button
+    <div
       @click="prev()"
       v-if="page.current != page.first && page.prev != null"
-      class="a"
+      class="a sls_pag_btn"
     >
       {{ "<" }}
-    </button>
-    <button
+    </div>
+    <div
       @click="first()"
       v-if="page.current != page.first && page.prev != page.first"
-      class="b"
+      class="b sls_pag_btn"
     >
       {{ page.first }}
-    </button>
-    <button
+    </div>
+    <div
       @click="prev()"
       v-if="page.current != page.first && page.prev != null"
-      class="c"
+      class="c sls_pag_btn"
     >
       {{ page.prev }}
-    </button>
-    <button class="current d">{{ page.current }}</button>
-    <button
+    </div>
+    <div class="current d sls_pag_btn">{{ page.current }}</div>
+    <div
       @click="next()"
       v-if="page.current != page.last && page.next != null"
-      class="e"
+      class="e sls_pag_btn"
     >
       {{ page.next }}
-    </button>
-    <button
+    </div>
+    <div
       @click="last()"
       v-if="page.current != page.last && page.next != page.last"
-      class="f"
+      class="f sls_pag_btn"
     >
       {{ page.last }}
-    </button>
-    <button
+    </div>
+    <div
       @click="next()"
       v-if="page.current != page.last && page.next != null"
-      class="g"
+      class="g sls_pag_btn"
     >
       {{ ">" }}
-    </button>
+    </div>
   </div>
 </template>
 
@@ -66,7 +66,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-button {
+.sls_pag_btn {
+  cursor: pointer;
   min-width: 32px;
   height: 32px;
   border-radius: 0.375rem;
@@ -79,7 +80,7 @@ button {
   outline-color: #cbd5e1;
   border: none;
 }
-button:hover {
+.sls_pag_btn:hover {
   background-color: rgb(226 232 240);
 }
 .sls_grid {
