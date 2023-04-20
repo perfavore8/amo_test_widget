@@ -105,6 +105,12 @@
                         <div class="value">{{ product?.fields?.name }}</div>
                       </div>
                       <div class="rows">
+                        <div class="sls_row">
+                          <div class="name" style="font-weight: 500">Тип :</div>
+                          <div class="value">
+                            {{ product.is_service ? "Услуга" : "Товар" }}
+                          </div>
+                        </div>
                         <template v-for="field in sortedFields" :key="field">
                           <template v-if="field.type === 11">
                             <div class="sls_row">
