@@ -247,13 +247,15 @@
                             () =>
                               disableAddToDeal
                                 ? null
-                                : product.is_service
-                                ? allWhsList[idx][0].specialValue == 0
-                                : allWhsList?.[idx]?.reduce(
-                                    (sum, wh) =>
-                                      (sum += Number(wh?.specialValue)),
-                                    0
-                                  ) == 0
+                                : (
+                                    product.is_service
+                                      ? !allWhsList[idx][0].specialValue
+                                      : allWhsList?.[idx]?.reduce(
+                                          (sum, wh) =>
+                                            (sum += Number(wh?.specialValue)),
+                                          0
+                                        ) == 0
+                                  )
                                 ? null
                                 : addToLead(product.id)
                           "
@@ -427,8 +429,10 @@ export default {
       return this.fields?.filter((field) => field.lead_config?.visible > 0);
     },
     productsLength() {
-      console.log(this.products.length);
       return this.products.length;
+    },
+    isLastProductPerPage() {
+      return this.meta.meta.from === this.meta.meta.to;
     },
   },
   async mounted() {
@@ -474,9 +478,6 @@ export default {
     dropPage() {
       this.changePage(1);
     },
-    isLastProductPerPage() {
-      this.meta.from === this.meta.to;
-    },
     fillAllWhsList() {
       const res = [];
 
@@ -505,23 +506,36 @@ export default {
     async addToLead(id) {
       const product = this.products.find((product) => product.id === id);
       const idx = this.products.indexOf(product);
-      if (product.is_service) {
-        await this.$store.dispatch("addProduct2", {
-          account_id: 30214471,
-          productId: id,
-          count: this.allWhsList[idx][0].specialValue,
-        });
-      } else {
-        this.allWhsList[idx].forEach(async (wh) => {
-          if (wh.specialValue) {
+      const myPromise = await new Promise((resolve) => {
+        (async () => {
+          if (product.is_service) {
             await this.$store.dispatch("addProduct2", {
               account_id: 30214471,
-              productId: [id, wh.code].join("%%%"),
-              count: wh.specialValue,
+              productId: id,
+              count: this.allWhsList[idx][0].specialValue,
             });
+            resolve();
+          } else {
+            const products = {};
+            this.allWhsList[idx].forEach((wh) => {
+              if (wh.specialValue) {
+                const params = {
+                  account_id: 30214471,
+                  productId: [id, wh.code].join("%%%"),
+                  count: wh.specialValue,
+                };
+                products[params.productId] = params.count;
+              }
+            });
+            await this.$store.dispatch("addProduct3", {
+              products: products,
+              account_id: 30214471,
+            });
+            resolve();
           }
-        });
-      }
+        })();
+      });
+      await myPromise;
       this.updateProductsList();
     },
     updateProductsList() {

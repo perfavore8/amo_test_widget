@@ -273,7 +273,7 @@ export default {
           }
         });
       });
-      await this.$store.dispatch("addProduct3", {
+      this.$store.dispatch("addProduct3", {
         products: products,
         account_id: 30214471,
       });
