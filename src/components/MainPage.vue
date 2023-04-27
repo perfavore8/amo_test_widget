@@ -1253,21 +1253,18 @@ export default {
 }
 .for_dark {
   .input-select:deep(.sls_input) {
-    background-color: initial;
-    color: inherit;
-    border: 1px solid var(--palette-border-default);
+    background-color: initial !important;
+    color: inherit !important;
+    border: 1px solid var(--palette-border-default) !important;
   }
   .input-select:deep(.item) {
-    background: var(--palette-background-primary);
-    border: initial;
+    background: var(--palette-background-primary) !important;
+    border: initial !important;
   }
   .btns {
     .sls_checkbox + label::before {
-      filter: contrast(0.5);
-      @include bg_image(
-        'data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="20" height="20" viewBox="0 0 24 24"%3E%3Cpath fill="none" stroke="%23c4c4c4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m6-8l-6-6m-6 6l6-6"%2F%3E%3C%2Fsvg%3E',
-        75%
-      );
+      background-size: 75% !important;
+      background-image: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="20" height="20" viewBox="0 0 24 24"%3E%3Cpath fill="none" stroke="%23c4c4c4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m6-8l-6-6m-6 6l6-6"%2F%3E%3C%2Fsvg%3E') !important;
     }
   }
 }
