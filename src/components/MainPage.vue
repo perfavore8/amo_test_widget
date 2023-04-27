@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app" :class="{ for_dark: isDarkTheme }">
     <div class="container1">
       <div class="header"></div>
       <div class="content">
@@ -386,6 +386,17 @@ export default {
       };
       return obj;
     },
+    isDarkTheme() {
+      return (
+        // eslint-disable-next-line no-undef
+        $(".left-menu__themes-toggler")
+          .find(".themes-toggler__checkbox:checked")
+          .parent(".themes-toggler__item")
+          .find(".themes-toggler__content")
+          .text()
+          .trim() === "dark"
+      );
+    },
     meta() {
       return this.$store.state.products.meta2;
     },
@@ -708,10 +719,10 @@ export default {
             background-position: center center;
           }
           .sls_checkbox:not(:checked) + label:hover::before {
-            background-size: 110%;
+            transform: scale(1.1) rotateX(180deg);
           }
           .sls_checkbox:checked + label:hover::before {
-            background-size: 110%;
+            transform: scale(1.1) rotateX(0deg);
             background-position: center center;
           }
           .sls_checkbox:not(:disabled):active + label::before {
@@ -1239,5 +1250,25 @@ export default {
 .sls_paginator {
   width: fit-content;
   margin: 20px auto;
+}
+.for_dark {
+  .input-select:deep(.sls_input) {
+    background-color: initial;
+    color: inherit;
+    border: 1px solid var(--palette-border-default);
+  }
+  .input-select:deep(.item) {
+    background: var(--palette-background-primary);
+    border: initial;
+  }
+  .btns {
+    .sls_checkbox + label::before {
+      filter: contrast(0.5);
+      @include bg_image(
+        'data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="20" height="20" viewBox="0 0 24 24"%3E%3Cpath fill="none" stroke="%23c4c4c4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m6-8l-6-6m-6 6l6-6"%2F%3E%3C%2Fsvg%3E',
+        75%
+      );
+    }
+  }
 }
 </style>
