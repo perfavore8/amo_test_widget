@@ -1126,7 +1126,8 @@ export default {
         }
         .categories {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+          gap: 12px !important;
           .card {
             cursor: pointer;
             width: 100%;
@@ -1156,7 +1157,8 @@ export default {
                 -webkit-line-clamp: 2; /* number of lines to show */
                 line-clamp: 2;
                 -webkit-box-orient: vertical;
-                min-height: 54px;
+                min-height: 48px;
+                font-size: 16px;
               }
             }
           }
