@@ -162,16 +162,13 @@
                               <div class="name">Свободно для резерва:</div>
                               <div class="value">
                                 {{
-                                  Number(
-                                    product?.fields[field.code]?.count
-                                      ? product?.fields[field.code]?.count
-                                      : 0
-                                  ) +
-                                  Number(
-                                    product?.fields[field.code]?.reserve
-                                      ? product?.fields[field.code]?.reserve
-                                      : 0
-                                  )
+                                  product?.fields?.free_4_reserve == -1
+                                    ? "&infin;"
+                                    : Number(
+                                        product?.fields?.free_4_reserve
+                                          ? product?.fields?.free_4_reserve
+                                          : 0
+                                      )
                                 }}
                               </div>
                             </div>
