@@ -246,7 +246,7 @@
                                 ? null
                                 : (
                                     product.is_service
-                                      ? !allWhsList[idx][0].specialValue
+                                      ? !allWhsList[idx][0]?.specialValue
                                       : allWhsList?.[idx]?.reduce(
                                           (sum, wh) =>
                                             (sum += Number(wh?.specialValue)),
@@ -260,7 +260,7 @@
                             btn_del_disabled: disableAddToDeal
                               ? true
                               : product.is_service
-                              ? !allWhsList[idx][0].specialValue
+                              ? !allWhsList[idx][0]?.specialValue
                               : allWhsList?.[idx]?.reduce(
                                   (sum, wh) =>
                                     (sum += Number(wh?.specialValue)),
@@ -413,7 +413,7 @@ export default {
     savedAllWhsList() {
       const list = this.allWhsList.filter((whs) => {
         const total = whs.reduce(
-          (sum, wh) => (sum += Number(wh.specialValue)),
+          (sum, wh) => (sum += Number(wh?.specialValue)),
           0
         );
         return total;
@@ -520,17 +520,17 @@ export default {
             await this.$store.dispatch("addProduct2", {
               account_id: 30214471,
               productId: id,
-              count: this.allWhsList[idx][0].specialValue,
+              count: this.allWhsList[idx][0]?.specialValue,
             });
             resolve();
           } else {
             const products = {};
             this.allWhsList[idx].forEach((wh) => {
-              if (wh.specialValue) {
+              if (wh?.specialValue) {
                 const params = {
                   account_id: 30214471,
                   productId: [id, wh.code].join("%%%"),
-                  count: wh.specialValue,
+                  count: wh?.specialValue,
                 };
                 products[params.productId] = params.count;
               }
