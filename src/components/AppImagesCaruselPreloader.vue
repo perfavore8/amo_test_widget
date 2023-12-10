@@ -1,7 +1,7 @@
 <template>
   <div
     class="wrapper_preloader"
-    :class="{ 'aspect_square': square, 'aspect_video': !square }"
+    :class="{ aspect_square: square, aspect_video: !square }"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -33,12 +33,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.cvg_class{
+.cvg_class {
   width: 33.33%;
   height: 33.33%;
 }
-.aspect_square{aspect-ratio: 1 / 1;}
-.aspect_video{aspect-ratio: 16 / 9;}
+.aspect_square {
+  aspect-ratio: 1 / 1;
+}
+.aspect_video {
+  aspect-ratio: 16 / 9;
+}
 .wrapper_preloader {
   width: 100%;
   height: 100%;

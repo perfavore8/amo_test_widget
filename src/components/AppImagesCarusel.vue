@@ -1,27 +1,55 @@
 <template>
   <div>
     <label v-if="item">{{ item }}:</label>
-    <div class="wrapper" :class="[sizeWindow === 'f' ? 'w_full' : 'w_fit']" v-if="imagesList?.length"
-      :ref="(el) => (sizeWindow === 'f' ? (refComp = el) : null)">
-      <AppImagesCaruselPreloader v-if="sizeWindow === 'f' ? images.isLoading : images.startLoading" :class="{
-        'size_14': sizeWindow !== 'f',
-      }" :square="sizeWindow !== 'f'" />
-      <img v-show="!(sizeWindow === 'f' ? images.isLoading : images.startLoading)" :src="imagesList[images.selectedIdx]"
-        class="parentImg" :class="{
-          'size_full': sizeWindow === 'f',
-          'size_14': sizeWindow !== 'f',
-        }" :alt="'Ошибка'" onerror="this.style.display='none'"
-        @load="() => (sizeWindow === 'f' ? images.load() : images.startLoad())" />
-      <div v-if="sizeWindow !== 'f'" class="main_wrapper hover_block" :class="[
-        {
-          'size_40': sizeWindow === 'm',
-          'size_52': sizeWindow === 'l',
-          'hover_hidden': sizeWindow === 'f',
-        },
-      ]" :style="[`${float}-0`]" :ref="(el) => (sizeWindow === 'f' ? null : (refComp = el))">
-        <AppImagesCaruselPreloader v-if="images.isLoading" :square="sizeWindow !== 'f'" />
-        <img v-show="!images.isLoading" :src="imagesList[images.selectedIdx]" class="main_img" :alt="'Ошибка'"
-          @load="() => images.load()" />
+    <div
+      class="wrapper"
+      :class="[sizeWindow === 'f' ? 'w_full' : 'w_fit']"
+      v-if="imagesList?.length"
+      :ref="(el) => (sizeWindow === 'f' ? (refComp = el) : null)"
+    >
+      <AppImagesCaruselPreloader
+        v-if="sizeWindow === 'f' ? images.isLoading : images.startLoading"
+        :class="{
+          size_14: sizeWindow !== 'f',
+        }"
+        :square="sizeWindow !== 'f'"
+      />
+      <img
+        v-show="!(sizeWindow === 'f' ? images.isLoading : images.startLoading)"
+        :src="imagesList[images.selectedIdx]"
+        class="parentImg"
+        :class="{
+          size_full: sizeWindow === 'f',
+          size_14: sizeWindow !== 'f',
+        }"
+        :alt="'Ошибка'"
+        onerror="this.style.display='none'"
+        @load="() => (sizeWindow === 'f' ? images.load() : images.startLoad())"
+      />
+      <div
+        v-if="sizeWindow !== 'f'"
+        class="main_wrapper hover_block"
+        :class="[
+          {
+            size_40: sizeWindow === 'm',
+            size_52: sizeWindow === 'l',
+            hover_hidden: sizeWindow === 'f',
+          },
+        ]"
+        :style="[`${float}-0`]"
+        :ref="(el) => (sizeWindow === 'f' ? null : (refComp = el))"
+      >
+        <AppImagesCaruselPreloader
+          v-if="images.isLoading"
+          :square="sizeWindow !== 'f'"
+        />
+        <img
+          v-show="!images.isLoading"
+          :src="imagesList[images.selectedIdx]"
+          class="main_img"
+          :alt="'Ошибка'"
+          @load="() => images.load()"
+        />
       </div>
     </div>
   </div>
@@ -44,7 +72,6 @@
 
 <script>
 import { nextTick, reactive, ref, watch } from "vue";
-import { useLangConfiguration } from "@/composables/langConfiguration";
 import AppImagesCaruselPreloader from "./AppImagesCaruselPreloader.vue";
 export default {
   components: { AppImagesCaruselPreloader },
@@ -216,7 +243,6 @@ img[alt]:after {
     height: 208px;
   }
 
-
   .main_img {
     width: 100%;
     height: 100%;
@@ -233,6 +259,10 @@ img[alt]:after {
     display: none;
   }
 }
-.w_full{width: 100%;}
-.w_fit{width: fit-content;}
+.w_full {
+  width: 100%;
+}
+.w_fit {
+  width: fit-content;
+}
 </style>

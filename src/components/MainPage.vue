@@ -189,24 +189,22 @@
                           </template>
                           <template v-else-if="field.code === 'name'" />
                           <template
-                                  v-else-if="
-                                    field.type === 15 &&
-                                    product?.fields[field.code]?.length
-                                  "
-                                >
-                                  <div class="sls_row">
-                                    <div class="name">{{ field.name }}:</div>
-                                    <div class="value">
-                                      <AppImagesCarusel
-                                        :imagesList="
-                                          product?.fields[field.code]
-                                        "
-                                        :sizeWindow="'m'"
-                                        :float="'right'"
-                                      />
-                                    </div>
-                                  </div>
-                                </template>
+                            v-else-if="
+                              field.type === 15 &&
+                              product?.fields[field.code]?.length
+                            "
+                          >
+                            <div class="sls_row">
+                              <div class="name">{{ field.name }}:</div>
+                              <div class="value">
+                                <AppImagesCarusel
+                                  :imagesList="product?.fields[field.code]"
+                                  :sizeWindow="'m'"
+                                  :float="'right'"
+                                />
+                              </div>
+                            </div>
+                          </template>
                           <div class="sls_row" v-else>
                             <div class="name">{{ field.name }}:</div>
                             <div class="value">
@@ -355,8 +353,8 @@ export default {
     AppInputSelect,
     FiltersModal,
     AppPaginator,
-    AppImagesCarusel
-},
+    AppImagesCarusel,
+  },
   data() {
     return {
       show_cards: false,
