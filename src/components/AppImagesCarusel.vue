@@ -23,7 +23,6 @@
           size_14: sizeWindow !== 'f',
         }"
         :alt="'Ошибка'"
-        onerror="this.style.display='none'"
         @load="() => (sizeWindow === 'f' ? images.load() : images.startLoad())"
       />
       <div
