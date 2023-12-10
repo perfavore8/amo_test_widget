@@ -36,7 +36,7 @@
             hover_hidden: sizeWindow === 'f',
           },
         ]"
-        :style="[`${float}-0`]"
+        :style="[`${float}: 0`]"
         :ref="(el) => (sizeWindow === 'f' ? null : (refComp = el))"
       >
         <AppImagesCaruselPreloader

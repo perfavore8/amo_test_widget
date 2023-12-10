@@ -5,10 +5,10 @@
       @click="close()"
     />
     <div class="wrapper">
-      <div class="modal-header">
+      <div class="sls_modal-header">
         <div class="head-text">Настройка таблицы</div>
       </div>
-      <div class="modal-body">
+      <div class="sls_modal-body">
         <div class="text">
           <small class="small-text"
             >Перетаскивайте колонки для изменения очередности</small
@@ -28,7 +28,7 @@
           </div>
         </draggable>
       </div>
-      <div class="modal-footer">
+      <div class="sls_modal-footer">
         <btns-save-close @close="close" @save="save" />
       </div>
     </div>
@@ -130,12 +130,12 @@ export default {
   outline: 0;
   z-index: 250;
 }
-.modal-header {
+.sls_modal-header {
   text-align: left;
   padding: 1rem 1rem;
   border-bottom: 1px solid #dee2e6;
 }
-.modal-body {
+.sls_modal-body {
   overflow-y: auto;
   padding: 16px;
   // padding-top: 0;
@@ -219,7 +219,7 @@ export default {
   border-color: #b3d7ff;
   cursor: default;
 }
-.modal-footer {
+.sls_modal-footer {
   display: flex;
   flex-direction: row;
   justify-content: end;
