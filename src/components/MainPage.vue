@@ -188,6 +188,25 @@
                             </div>
                           </template>
                           <template v-else-if="field.code === 'name'" />
+                          <template
+                                  v-else-if="
+                                    field.type === 15 &&
+                                    product?.fields[field.code]?.length
+                                  "
+                                >
+                                  <div class="sls_row">
+                                    <div class="name">{{ field.name }}:</div>
+                                    <div class="value">
+                                      <AppImagesCarusel
+                                        :imagesList="
+                                          product?.fields[field.code]
+                                        "
+                                        :sizeWindow="'m'"
+                                        :float="'right'"
+                                      />
+                                    </div>
+                                  </div>
+                                </template>
                           <div class="sls_row" v-else>
                             <div class="name">{{ field.name }}:</div>
                             <div class="value">
@@ -330,12 +349,14 @@ import { mapGetters } from "vuex";
 import AppInputSelect from "@/components/AppInputSelect.vue";
 import AppPaginator from "./AppPaginator.vue";
 import FiltersModal from "@/components/FiltersModal.vue";
+import AppImagesCarusel from "./AppImagesCarusel.vue";
 export default {
   components: {
     AppInputSelect,
     FiltersModal,
     AppPaginator,
-  },
+    AppImagesCarusel
+},
   data() {
     return {
       show_cards: false,

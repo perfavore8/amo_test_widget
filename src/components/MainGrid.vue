@@ -73,7 +73,10 @@
                 </div>
               </td>
               <template v-for="item in sortedFields" :key="item">
-                <td class="item">
+                <td class="item" v-if="item[1].type === 15">
+                  <AppImagesCarusel :imagesList="row.fields[item[0]]" />
+                </td>
+                <td class="item" v-else>
                   <span v-if="item[0].split('.').length < 2">
                     {{
                       item[0] == "category"
