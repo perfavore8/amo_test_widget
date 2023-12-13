@@ -150,6 +150,7 @@ import MainGridFilters from "../components/MainGridFilters.vue";
 import MainGridBar from "../components/MainGridBar.vue";
 import GridBottom from "../components/GridBottom.vue";
 import AppInputSelect from "./AppInputSelect.vue";
+import AppImagesCarusel from "./AppImagesCarusel.vue";
 export default {
   name: "MainGrid",
   components: {
@@ -158,6 +159,7 @@ export default {
     MainGridBar,
     GridBottom,
     AppInputSelect,
+    AppImagesCarusel,
   },
   props: {},
   emits: {
