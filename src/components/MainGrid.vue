@@ -211,11 +211,13 @@ export default {
     },
     sortedFields() {
       const list = Object.entries(this.tableConfig);
-      return list.sort((a, b) => {
-        if (a[1].sort > b[1].sort) return 1;
-        if (a[1].sort == b[1].sort) return 0;
-        if (a[1].sort < b[1].sort) return -1;
-      });
+      return list
+        .sort((a, b) => {
+          if (a[1].sort > b[1].sort) return 1;
+          if (a[1].sort == b[1].sort) return 0;
+          if (a[1].sort < b[1].sort) return -1;
+        })
+        .filter((val) => val.visible);
     },
     categories() {
       const obj = {};
