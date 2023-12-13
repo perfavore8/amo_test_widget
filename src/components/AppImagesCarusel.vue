@@ -2,7 +2,7 @@
   <div>
     <label v-if="item">{{ item }}:</label>
     <div
-      class="wrapper"
+      class="sls_wrapper"
       :class="[sizeWindow === 'f' ? 'w_full' : 'w_fit']"
       v-if="imagesList?.length"
       :ref="(el) => (sizeWindow === 'f' ? (refComp = el) : null)"
@@ -53,15 +53,37 @@
     </div>
   </div>
   <Teleport :to="refComp" v-if="refComp !== null">
-    <div v-if="imagesList.length > 1" class="navigation">
+    <div v-if="imagesList.length > 1" class="sls_navigation">
       <button class="hf" @click="images.pref(imagesList.length)">
-        <span class="material-icons-outlined"> navigate_before </span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <path
+            fill="currentColor"
+            d="M14.91 6.71a.996.996 0 0 0-1.41 0L8.91 11.3a.996.996 0 0 0 0 1.41l4.59 4.59a.996.996 0 1 0 1.41-1.41L11.03 12l3.88-3.88c.38-.39.38-1.03 0-1.41"
+          />
+        </svg>
       </button>
       <button class="hf" @click="images.next(imagesList.length)">
-        <span class="material-icons-outlined"> navigate_next </span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <g transform="translate(24 0) scale(-1 1)">
+            <path
+              fill="currentColor"
+              d="M14.91 6.71a.996.996 0 0 0-1.41 0L8.91 11.3a.996.996 0 0 0 0 1.41l4.59 4.59a.996.996 0 1 0 1.41-1.41L11.03 12l3.88-3.88c.38-.39.38-1.03 0-1.41"
+            />
+          </g>
+        </svg>
       </button>
     </div>
-    <div class="pagination">
+    <div class="sls_pagination">
       <span>
         {{ images.selectedIdx + 1 + " / " + imagesList.length }}
       </span>
@@ -171,7 +193,7 @@ img[alt]:after {
   content: attr(alt);
 }
 
-.navigation {
+.sls_navigation {
   position: absolute;
   left: 0;
   top: 50%;
@@ -189,7 +211,7 @@ img[alt]:after {
   }
 }
 
-.pagination {
+.sls_pagination {
   position: absolute;
   bottom: 8px;
   left: 50%;
@@ -198,7 +220,7 @@ img[alt]:after {
   color: rgb(51 65 85 / 0.7);
 }
 
-.wrapper {
+.sls_wrapper {
   position: relative;
   height: fit-content;
   display: flex;
@@ -249,7 +271,7 @@ img[alt]:after {
   }
 }
 
-.wrapper:hover {
+.sls_wrapper:hover {
   .hover_block {
     display: block;
   }
