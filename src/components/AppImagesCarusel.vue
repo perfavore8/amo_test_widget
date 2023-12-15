@@ -54,7 +54,11 @@
   </div>
   <Teleport :to="refComp" v-if="refComp !== null">
     <div v-if="imagesList.length > 1" class="sls_navigation">
-      <button class="hf" @click="images.pref(imagesList.length)">
+      <button
+        class="hf"
+        style="background-color: transparent"
+        @click="images.pref(imagesList.length)"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -67,7 +71,11 @@
           />
         </svg>
       </button>
-      <button class="hf" @click="images.next(imagesList.length)">
+      <button
+        class="hf"
+        style="background-color: transparent"
+        @click="images.next(imagesList.length)"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -202,7 +210,6 @@ img[alt]:after {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 4px;
   height: 100%;
   background-color: transparent;
 
