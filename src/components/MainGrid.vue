@@ -217,7 +217,7 @@ export default {
           if (a[1].sort == b[1].sort) return 0;
           if (a[1].sort < b[1].sort) return -1;
         })
-        .filter((val) => val.visible);
+        .filter((val) => val[1].visible);
     },
     categories() {
       const obj = {};
