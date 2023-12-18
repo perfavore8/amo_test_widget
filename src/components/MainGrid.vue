@@ -453,6 +453,7 @@ export default {
   color: #3f3f3f;
   text-align: start;
   min-width: 50px;
+  vertical-align: middle;
   .input-select:deep(.item) {
     justify-content: flex-start;
     gap: 8px;
