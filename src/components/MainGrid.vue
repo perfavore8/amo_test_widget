@@ -301,16 +301,29 @@ export default {
         if (whs) {
           res.push(whs);
         } else {
-          const copyArr = product.whs?.map((a) => ({ ...a }));
-          copyArr.map((wh) => {
-            wh.name = wh.name + "   |   " + wh.count;
-            wh.value = wh.code;
-            wh.specialValue = null;
-            wh.product_id = product.id;
-            wh.is_service = product.is_service;
-            wh.product_name = product.fields?.name;
-          });
-          res.push(copyArr);
+          if (product.is_service) {
+            res.push([
+              {
+                name: "Основной склад   |   0",
+                value: "wh",
+                specialValue: null,
+                product_id: String(product.id),
+                is_service: product.is_service,
+                product_name: product.fields?.name,
+              },
+            ]);
+          } else {
+            const copyArr = product.whs?.map((a) => ({ ...a }));
+            copyArr.map((wh) => {
+              wh.name = wh.name + "   |   " + wh.count;
+              wh.value = wh.code;
+              wh.specialValue = null;
+              wh.product_id = product.id;
+              wh.is_service = product.is_service;
+              wh.product_name = product.fields?.name;
+            });
+            res.push(copyArr);
+          }
         }
       });
 
