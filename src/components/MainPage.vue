@@ -75,11 +75,17 @@
                     :key="cat"
                     @click="selectCategories(cat)"
                   >
-                    <div class="sls_row title">
+                    <div
+                      class="sls_row title title2"
+                      :class="{ tw: cat.img_url }"
+                    >
                       <div class="name"></div>
                       <div class="value">{{ cat.name }}</div>
                     </div>
-                    <div class="sls_row" />
+                    <div class="sls_row" v-if="!cat.img_url" />
+                    <div v-if="cat.img_url" class="img1" />
+                    <img v-if="cat.img_url" :src="cat.img_url" class="img2" />
+                    <img v-if="cat.img_url" :src="cat.img_url" class="img3" />
                   </div>
                 </div>
               </div>
@@ -1284,6 +1290,53 @@ export default {
       background-size: 75% !important;
       background-image: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="20" height="20" viewBox="0 0 24 24"%3E%3Cpath fill="none" stroke="%23c4c4c4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m6-8l-6-6m-6 6l6-6"%2F%3E%3C%2Fsvg%3E') !important;
     }
+  }
+}
+.path {
+  .title2 {
+    position: relative;
+    z-index: 20;
+  }
+  .tw {
+    color: white;
+  }
+  .img1 {
+    width: 100%;
+    height: 10px;
+    background-color: #00000053;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 10;
+  }
+  .img2 {
+    aspect-ratio: auto;
+    width: 75%;
+    z-index: 3;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    transition: all 0.3s ease-out;
+    left: 50%;
+  }
+  .card:hover {
+    .img2 {
+      transform: translateY(-50%) translateX(-50%) scale(0.6);
+    }
+    .img3 {
+      transform: translateY(-50%) translateX(-50%) scale(0.6);
+    }
+  }
+  .img3 {
+    aspect-ratio: auto;
+    width: 75%;
+    z-index: 2;
+    filter: blur(20px);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    transition: all 0.3s ease-out;
+    left: 50%;
   }
 }
 </style>
